@@ -36,27 +36,25 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Future<void> _login() async {
-    // Simulate a network call
     await Future.delayed(Duration(seconds: 2));
-
-    // Assuming login fails
-    bool loginSuccess = false;
+    bool loginblue = false;
 
     EasyLoading.dismiss();
 
-    if (!loginSuccess) {
+    if (!loginblue) {
       AwesomeDialog(
         context: context,
         dialogType: DialogType.error,
         animType: AnimType.rightSlide,
         headerAnimationLoop: true,
         title: 'ແຈ້ງເຕືອນ',
-        desc: 'ຂໍອະໄພ ! ລະຫັດບັດຂອງທ່ານບໍ່ຖືກຕ້ອງ',
+        desc: 'ຂໍອະໄພ ! ຊື່ ແລະ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ',
         btnOkOnPress: () {},
         btnOkIcon: Icons.cancel,
-        btnOkColor: Colors.red,
+        btnOkColor: Colors.blue,
         btnOkText: 'ປິດ',
       ).show();
+      Navigator.pushReplacementNamed(context, "tap");
     }
   }
 
@@ -82,18 +80,17 @@ class _LoginPageState extends State<LoginPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 80),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           width: widthscreen,
-                          height:
-                              widthscreen, // Ensure the container has fixed dimensions
+                          height: widthscreen,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(
-                              color: const Color.fromARGB(255, 112, 180, 235),
+                              color: Colors.blue,
                               width: 2,
                             ),
                           ),
@@ -109,10 +106,10 @@ class _LoginPageState extends State<LoginPage>
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      " ຮ້ານອາຫານ ອາຊໍ້",
+                      " ອາຊໍ້ ຫູສະຫລາມ",
                       style: TextStyle(
                         fontSize: 28,
-                        color: Colors.black,
+                        color: Colors.blue,
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -237,7 +234,7 @@ class _LoginPageState extends State<LoginPage>
                         });
                       },
                       child: const Text(
-                        "ເຂົ້າລະບົມ",
+                        "ເຂົ້າລະບົບ",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 17,
