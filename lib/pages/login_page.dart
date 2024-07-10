@@ -11,25 +11,35 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage>
     with AutomaticKeepAliveClientMixin<LoginPage> {
-  final _fromKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
   bool _isPasswordVisible = false;
-  String lengthDisplayText = "0";
+  bool _isValidationEnabled = true;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   bool get wantKeepAlive => true;
 
   Future<void> _refresh() async {
+    // Capture the current scroll position
+    double currentScrollPosition = _scrollController.position.pixels;
+
     await Future.delayed(const Duration(seconds: 2));
     emailController.text = "";
     passwordController.text = "";
+
+    // Restore the scroll position
+    _scrollController.jumpTo(currentScrollPosition);
   }
 
   Future<void> _login() async {
     // Simulate a network call
     await Future.delayed(Duration(seconds: 2));
 
+    // Assuming login fails
     bool loginSuccess = false;
 
     EasyLoading.dismiss();
@@ -63,11 +73,12 @@ class _LoginPageState extends State<LoginPage>
         body: RefreshIndicator(
           onRefresh: _refresh,
           child: SingleChildScrollView(
+            controller: _scrollController, // Attach the ScrollController
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Form(
-                key: _fromKey,
+                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -76,6 +87,9 @@ class _LoginPageState extends State<LoginPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
+                          width: widthscreen,
+                          height:
+                              widthscreen, // Ensure the container has fixed dimensions
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(
@@ -86,8 +100,8 @@ class _LoginPageState extends State<LoginPage>
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: Image.asset(
-                              "assets/images/oac.png",
-                              width: widthscreen,
+                              "assets/images/azor.jpg",
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
@@ -108,6 +122,7 @@ class _LoginPageState extends State<LoginPage>
                         children: [
                           TextFormField(
                             controller: emailController,
+                            focusNode: emailFocusNode,
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(fontSize: 18),
                             decoration: const InputDecoration(
@@ -133,6 +148,7 @@ class _LoginPageState extends State<LoginPage>
                               prefixIcon: Icon(Icons.person),
                             ),
                             validator: (value) {
+                              if (!_isValidationEnabled) return null;
                               if (value == null || value.isEmpty) {
                                 return '* ກະລຸນາປ້ອນອີເມວ';
                               }
@@ -149,6 +165,7 @@ class _LoginPageState extends State<LoginPage>
                         children: [
                           TextFormField(
                             controller: passwordController,
+                            focusNode: passwordFocusNode,
                             obscureText: !_isPasswordVisible,
                             style: const TextStyle(fontSize: 18),
                             decoration: InputDecoration(
@@ -186,6 +203,7 @@ class _LoginPageState extends State<LoginPage>
                               ),
                             ),
                             validator: (value) {
+                              if (!_isValidationEnabled) return null;
                               if (value == null || value.isEmpty) {
                                 return '* ກະລຸນາປ້ອນລະຫັດຜ່ານ';
                               }
@@ -207,10 +225,16 @@ class _LoginPageState extends State<LoginPage>
                         ),
                       ),
                       onPressed: () async {
-                        if (_fromKey.currentState!.validate()) {
+                        setState(() {
+                          _isValidationEnabled = true;
+                        });
+                        if (_formKey.currentState!.validate()) {
                           EasyLoading.show(status: 'ປະມວນຜົມ...');
                           await _login();
                         }
+                        setState(() {
+                          _isValidationEnabled = false;
+                        });
                       },
                       child: const Text(
                         "ເຂົ້າລະບົມ",
