@@ -1,4 +1,7 @@
 import 'package:azor/pages/login_page.dart';
+import 'package:azor/pages/product_detail_page.dart';
+import 'package:azor/pages/product_page.dart';
+import 'package:azor/pages/search_page.dart';
 import 'package:azor/pages/tab_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -33,6 +36,9 @@ class MyApp extends StatelessWidget {
         routes: {
           "login": (_) => const LoginPage(),
           "tap": (_) => const TapPage(),
+          "table_id": (_) => const ProductList(),
+          "search": (_) => const SearchPage(),
+          "detail": (_) => const ProductDetail(),
         },
       ),
     );

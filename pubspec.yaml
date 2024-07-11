@@ -41,6 +41,8 @@ dependencies:
   shared_preferences: ^2.2.3
   provider: ^6.1.2
   convex_bottom_bar: ^3.2.0
+  card_loading: ^0.3.2
+  another_carousel_pro: ^1.0.2
 
 dev_dependencies:
   flutter_test:
