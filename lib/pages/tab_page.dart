@@ -73,13 +73,13 @@ class _TapPageState extends State<TapPage> {
             const Duration(seconds: 2)) {
       _lastPressedAt = DateTime.now();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.red,
         content: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(5),
               decoration: const BoxDecoration(
-                color: Colors.yellow,
+                color: Colors.white,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -89,7 +89,7 @@ class _TapPageState extends State<TapPage> {
             ),
             const SizedBox(width: 10),
             const Text(
-              'ກົດກັບຄືນອີກຄັ້ງເພື່ອປິດໜ້າຕ່າງ',
+              'ກົດກັບຄືນອີກຄັ້ງເພື່ອປິດແອັບ',
               style: TextStyle(color: Colors.white),
             ),
           ],
