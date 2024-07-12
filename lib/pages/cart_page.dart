@@ -15,7 +15,7 @@ class _CartPageState extends State<CartPage> {
         backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
-          "ແຈ້ງເຕືອນ",
+          "ກະຕ໋າຂອງຂ້ອຍ",
           style: TextStyle(color: Colors.white, fontSize: 24),
         ),
         automaticallyImplyLeading: false,

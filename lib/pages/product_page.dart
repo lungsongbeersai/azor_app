@@ -330,7 +330,12 @@ class _ProductListState extends State<ProductList> {
           const SizedBox(height: 10),
           FloatingActionButton(
             backgroundColor: Colors.black,
-            onPressed: () async {},
+            onPressed: () async {
+              Navigator.pushNamed(
+                context,
+                "shopping_cart",
+              );
+            },
             child: const Icon(
               Icons.shopping_cart,
               color: Colors.white,
