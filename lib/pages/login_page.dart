@@ -1,6 +1,8 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:azor/services/provider_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -42,19 +44,42 @@ class _LoginPageState extends State<LoginPage>
     EasyLoading.dismiss();
 
     if (!loginblue) {
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.error,
-        animType: AnimType.rightSlide,
-        headerAnimationLoop: true,
-        title: 'ແຈ້ງເຕືອນ',
-        desc: 'ຂໍອະໄພ ! ຊື່ ແລະ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ',
-        btnOkOnPress: () {},
-        btnOkIcon: Icons.cancel,
-        btnOkColor: Colors.blue,
-        btnOkText: 'ປິດ',
-      ).show();
-      Navigator.pushReplacementNamed(context, "tap");
+      final providerservice =
+          Provider.of<ProviderService>(context, listen: false);
+      final resp = await providerservice.login(
+          emailController.text, passwordController.text);
+      if (resp == true) {
+        EasyLoading.dismiss();
+        Navigator.pushReplacementNamed(context, "tap");
+      } else {
+        EasyLoading.dismiss();
+        print("login failed");
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.rightSlide,
+          headerAnimationLoop: true,
+          title: 'ແຈ້ງເຕືອນ',
+          desc: 'ຂໍອະໄພ ! ລະຫັດບັດຂອງທ່ານບໍ່ຖືກຕ້ອງ',
+          btnOkOnPress: () {},
+          btnOkIcon: Icons.cancel,
+          btnOkColor: Colors.red,
+          btnOkText: 'ປິດ',
+        ).show();
+      }
+      // AwesomeDialog(
+      //   context: context,
+      //   dialogType: DialogType.error,
+      //   animType: AnimType.rightSlide,
+      //   headerAnimationLoop: true,
+      //   title: 'ແຈ້ງເຕືອນ',
+      //   desc: 'ຂໍອະໄພ ! ຊື່ ແລະ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ',
+      //   btnOkOnPress: () {},
+      //   btnOkIcon: Icons.cancel,
+      //   btnOkColor: Colors.blue,
+      //   btnOkText: 'ປິດ',
+      // ).show();
+      // Navigator.pushReplacementNamed(context, "tap");
     }
   }
 
