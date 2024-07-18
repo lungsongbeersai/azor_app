@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:azor/services/provider_service.dart';
+import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with AutomaticKeepAliveClientMixin<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController(text: '001');
-  TextEditingController passwordController = TextEditingController(text: '002');
+  TextEditingController emailController = TextEditingController(text: 'admin');
+  TextEditingController passwordController =
+      TextEditingController(text: '888888');
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
   bool _isPasswordVisible = false;
@@ -39,47 +41,37 @@ class _LoginPageState extends State<LoginPage>
 
   Future<void> _login() async {
     await Future.delayed(Duration(seconds: 2));
-    bool loginblue = false;
-
-    EasyLoading.dismiss();
-
-    if (!loginblue) {
-      final providerservice =
-          Provider.of<ProviderService>(context, listen: false);
-      final resp = await providerservice.login(
-          emailController.text, passwordController.text);
-      if (resp == true) {
-        EasyLoading.dismiss();
-        Navigator.pushReplacementNamed(context, "tap");
-      } else {
-        EasyLoading.dismiss();
-        print("login failed");
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.error,
-          animType: AnimType.rightSlide,
-          headerAnimationLoop: true,
-          title: 'ແຈ້ງເຕືອນ',
-          desc: 'ຂໍອະໄພ ! ລະຫັດບັດຂອງທ່ານບໍ່ຖືກຕ້ອງ',
-          btnOkOnPress: () {},
-          btnOkIcon: Icons.cancel,
-          btnOkColor: Colors.red,
-          btnOkText: 'ປິດ',
-        ).show();
+    final providerservice =
+        Provider.of<ProviderService>(context, listen: false);
+    final resp = await providerservice.login(
+        emailController.text, passwordController.text);
+    if (resp == true) {
+      if (!mounted) {
+        return;
       }
-      // AwesomeDialog(
-      //   context: context,
-      //   dialogType: DialogType.error,
-      //   animType: AnimType.rightSlide,
-      //   headerAnimationLoop: true,
-      //   title: 'ແຈ້ງເຕືອນ',
-      //   desc: 'ຂໍອະໄພ ! ຊື່ ແລະ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ',
-      //   btnOkOnPress: () {},
-      //   btnOkIcon: Icons.cancel,
-      //   btnOkColor: Colors.blue,
-      //   btnOkText: 'ປິດ',
-      // ).show();
-      // Navigator.pushReplacementNamed(context, "tap");
+      EasyLoading.dismiss();
+      if (MyData.statusCode == "202300000004") {
+        Navigator.pushReplacementNamed(context, "cook");
+      } else if (MyData.statusCode == "202300000005") {
+        Navigator.pushReplacementNamed(context, "bar");
+      } else {
+        Navigator.pushReplacementNamed(context, "tap");
+      }
+    } else {
+      EasyLoading.dismiss();
+      // print("login failed");
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        headerAnimationLoop: true,
+        title: 'ແຈ້ງເຕືອນ',
+        desc: 'ຂໍອະໄພ ! ອີເມວ ແລະ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ',
+        btnOkOnPress: () {},
+        btnOkIcon: Icons.cancel,
+        btnOkColor: Colors.red,
+        btnOkText: 'ປິດ',
+      ).show();
     }
   }
 
@@ -96,7 +88,7 @@ class _LoginPageState extends State<LoginPage>
         body: RefreshIndicator(
           onRefresh: _refresh,
           child: SingleChildScrollView(
-            controller: _scrollController, // Attach the ScrollController
+            controller: _scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.all(15),

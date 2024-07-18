@@ -1,3 +1,5 @@
+import 'package:azor/pages/bar_page.dart';
+import 'package:azor/pages/cook_page.dart';
 import 'package:azor/pages/login_page.dart';
 import 'package:azor/pages/product_detail_page.dart';
 import 'package:azor/pages/product_page.dart';
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
         initialRoute: 'login',
         routes: {
           "login": (_) => const LoginPage(),
+          "cook": (_) => const CookPage(),
+          "bar": (_) => const BarPage(),
           "tap": (_) => const TapPage(),
           "table_id": (_) => const ProductList(),
           "search": (_) => const SearchPage(),

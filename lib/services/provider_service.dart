@@ -1,10 +1,13 @@
 import 'package:azor/models/login_models.dart';
+import 'package:azor/models/zone_models.dart';
 import 'package:azor/services/api_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProviderService extends ChangeNotifier {
+  List<ZoneModel> zoneList = [];
+  int selectedIndex = 0;
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
 
@@ -53,5 +56,18 @@ class ProviderService extends ChangeNotifier {
     } catch (e) {
       print("Error wSharedPreferences: $e");
     }
+  }
+
+  getZone() async {
+    try {
+      zoneList = await APIService().zoneApi(MyData.branchCode);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching zones: $e');
+    }
+  }
+
+  getPullRefresh() {
+    getZone();
   }
 }

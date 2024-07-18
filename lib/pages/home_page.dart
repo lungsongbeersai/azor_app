@@ -1,4 +1,6 @@
+import 'package:azor/services/provider_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,6 +11,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _crossAxisCount = 3;
+  @override
+  void initState() {
+    super.initState();
+    final providerService =
+        Provider.of<ProviderService>(context, listen: false);
+    providerService.getZone();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +32,10 @@ class _HomePageState extends State<HomePage> {
     if (MediaQuery.of(context).size.width >= 1200) {
       _crossAxisCount = 5; // For larger screens (Android tablets, desktops)
     }
+
+    final providerService = Provider.of<ProviderService>(context);
+    final zoneList = providerService.zoneList;
+    final tableList=
 
     return Scaffold(
       appBar: AppBar(
@@ -46,50 +59,62 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 40,
               child: ListView.builder(
-                itemCount: 6,
+                itemCount: zoneList.length + 1,
                 physics: const AlwaysScrollableScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
-                  final item = index;
-                  String text;
-                  if (item == 0) {
-                    text = " ທັງໝົດ ";
-                  } else if (item == 1) {
-                    text = " ໂຊນນອກ ";
-                  } else if (item == 2) {
-                    text = " ໂຊນໃນ ";
-                  } else if (item == 3) {
-                    text = " ໂຊນຕູບ ";
-                  } else if (item == 4) {
-                    text = " ຊັ້ນເທິງ ";
-                  } else {
-                    text = " ຊັ້ນລຸ່ມ ";
-                  }
-
-                  return GestureDetector(
-                    onTap: () {
-                      print("1");
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: item != 0
-                            ? const Color(0xFFF0F0F0)
-                            : const Color(0xFF1976D2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      margin: const EdgeInsets.only(right: 8),
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        text,
-                        style: TextStyle(
-                          color: item != 0
-                              ? const Color(0xFF606060)
-                              : Colors.white,
-                          fontSize: 15,
+                  if (index == 0) {
+                    return GestureDetector(
+                      onTap: () {
+                        print("All selected");
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: providerService.selectedIndex != index
+                              ? const Color(0xFFEBEAEA)
+                              : const Color(0xFF1976D2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          'ທັງໝົດ',
+                          style: TextStyle(
+                            color: providerService.selectedIndex != index
+                                ? const Color(0xFF606060)
+                                : Colors.white,
+                            fontSize: 15,
+                          ),
                         ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    final zone = zoneList[index - 1];
+                    return GestureDetector(
+                      onTap: () {
+                        print("result:${zone.zoneCode}");
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: providerService.selectedIndex != index
+                              ? const Color(0xFFEBEAEA)
+                              : const Color(0xFF1976D2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          zone.zoneName.toString(),
+                          style: TextStyle(
+                            color: providerService.selectedIndex != index
+                                ? const Color(0xFF606060)
+                                : Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
@@ -98,7 +123,9 @@ class _HomePageState extends State<HomePage> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   await Future.delayed(const Duration(seconds: 2));
-                  setState(() {});
+                  setState(() {
+                    providerService.getPullRefresh();
+                  });
                 },
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
