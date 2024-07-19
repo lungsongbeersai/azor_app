@@ -1,6 +1,7 @@
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -68,6 +69,7 @@ class _HomePageState extends State<HomePage> {
                   if (index == 0) {
                     return GestureDetector(
                       onTap: () {
+                        EasyLoading.show(status: 'ປະມວນຜົນ...');
                         providerService.getTableGetId(
                           MyData.branchCode,
                           '',
@@ -99,6 +101,7 @@ class _HomePageState extends State<HomePage> {
                     print("result: ${item.zoneCode}");
                     return GestureDetector(
                       onTap: () {
+                        EasyLoading.show(status: 'ປະມວນຜົນ...');
                         providerService.getTableGetId(
                           MyData.branchCode,
                           item.zoneCode.toString(),

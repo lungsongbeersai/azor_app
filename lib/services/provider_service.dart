@@ -4,6 +4,7 @@ import 'package:azor/models/zone_models.dart';
 import 'package:azor/services/api_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProviderService extends ChangeNotifier {
@@ -78,12 +79,14 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  getTableGetId(String brachID, String zoneID, int active) async {
+  getTableGetId(String brachID, String zoneID, int itemActive) async {
+    await Future.delayed(Duration(seconds: 2));
     try {
-      selectedIndex = active;
-      tableList = await APIService()
-          .tableApi(MyData.branchCode, zoneID.toString(), active);
+      selectedIndex = itemActive;
+      tableList =
+          await APIService().tableApi(MyData.branchCode, zoneID, itemActive);
       notifyListeners();
+      EasyLoading.dismiss();
     } catch (e) {
       print('Error get ID zone: $e');
     }
@@ -91,7 +94,7 @@ class ProviderService extends ChangeNotifier {
 
   getPullRefresh() {
     getZone();
-    getTable();
     selectedIndex = 0;
+    getTable();
   }
 }

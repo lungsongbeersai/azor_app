@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage>
                           _isValidationEnabled = true;
                         });
                         if (_formKey.currentState!.validate()) {
-                          EasyLoading.show(status: 'ປະມວນຜົມ...');
+                          EasyLoading.show(status: 'ປະມວນຜົນ...');
                           await _login();
                         }
                         setState(() {

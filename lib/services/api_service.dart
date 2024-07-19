@@ -49,7 +49,7 @@ class APIService {
   }
 
   Future<List<TableModel>> tableApi(
-      String branchID, String zone, int actives) async {
+      String branchID, String zone, int itemActive) async {
     List<TableModel> tableList = [];
     final http.Response response = await http.post(
       Uri.parse('${urlAPI.toString()}/?api_table'),
@@ -57,20 +57,39 @@ class APIService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'table_branch_fk': branchID,
+        'table_branch_fk': branchID.toString(),
         'table_zone_fk': zone.toString(),
-        'active': actives.toString()
+        'active': itemActive.toString()
       }),
     );
 
     if (response.statusCode == 200) {
-      tableList = (json.decode(response.body) as List)
-          .map((e) => TableModel.fromJson(e))
-          .toList();
+      final responseData = json.decode(response.body);
+      if (responseData is List) {
+        tableList = responseData.map((e) => TableModel.fromJson(e)).toList();
+      } else if (responseData is Map) {
+        if (responseData.containsKey('data') && responseData['data'] is List) {
+          tableList = (responseData['data'] as List)
+              .map((e) => TableModel.fromJson(e))
+              .toList();
+        } else {
+          throw Exception('emty: $responseData');
+        }
+      }
       return tableList;
     } else {
       throw Exception(
-          'Failed to fetch exercise, status code: ${response.statusCode}');
+          'Failed to fetch data, status code: ${response.statusCode}');
     }
+
+    // if (response.statusCode == 200) {
+    //   tableList = (json.decode(response.body) as List)
+    //       .map((e) => TableModel.fromJson(e))
+    //       .toList();
+    //   return tableList;
+    // } else {
+    //   throw Exception(
+    //       'Failed to fetch exercise, status code: ${response.statusCode}');
+    // }
   }
 }
