@@ -159,7 +159,7 @@ class _ProductListState extends State<ProductList> {
                             //   color: item == 1 ? Colors.white : Colors.black,
                             // ),
                             SvgPicture.network(
-                              'https://example.com/path/to/your/search.svg',
+                              '${item.cateIcon}',
                               color: item == 1 ? Colors.white : Colors.black,
                               height: 24.0,
                               width: 24.0,
