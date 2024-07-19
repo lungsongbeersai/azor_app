@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:azor/models/login_models.dart';
+import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,6 +42,32 @@ class APIService {
           .map((e) => ZoneModel.fromJson(e))
           .toList();
       return zoneList;
+    } else {
+      throw Exception(
+          'Failed to fetch exercise, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<List<TableModel>> tableApi(
+      String branchID, String zone, int actives) async {
+    List<TableModel> tableList = [];
+    final http.Response response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?api_table'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'table_branch_fk': branchID,
+        'table_zone_fk': zone.toString(),
+        'active': actives.toString()
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      tableList = (json.decode(response.body) as List)
+          .map((e) => TableModel.fromJson(e))
+          .toList();
+      return tableList;
     } else {
       throw Exception(
           'Failed to fetch exercise, status code: ${response.statusCode}');

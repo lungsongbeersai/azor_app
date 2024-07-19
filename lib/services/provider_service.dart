@@ -1,4 +1,5 @@
 import 'package:azor/models/login_models.dart';
+import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
 import 'package:azor/services/api_service.dart';
 import 'package:azor/shared/myData.dart';
@@ -7,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ProviderService extends ChangeNotifier {
   List<ZoneModel> zoneList = [];
+  List<TableModel> tableList = [];
   int selectedIndex = 0;
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
@@ -67,7 +69,29 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  getTable() async {
+    try {
+      tableList = await APIService().tableApi(MyData.branchCode, '', 0);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching table: $e');
+    }
+  }
+
+  getTableGetId(String brachID, String zoneID, int active) async {
+    try {
+      selectedIndex = active;
+      tableList = await APIService()
+          .tableApi(MyData.branchCode, zoneID.toString(), active);
+      notifyListeners();
+    } catch (e) {
+      print('Error get ID zone: $e');
+    }
+  }
+
   getPullRefresh() {
     getZone();
+    getTable();
+    selectedIndex = 0;
   }
 }

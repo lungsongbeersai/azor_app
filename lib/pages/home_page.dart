@@ -1,4 +1,5 @@
 import 'package:azor/services/provider_service.dart';
+import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,7 @@ class _HomePageState extends State<HomePage> {
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
     providerService.getZone();
+    providerService.getTable();
   }
 
   @override
@@ -35,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
     final providerService = Provider.of<ProviderService>(context);
     final zoneList = providerService.zoneList;
-    final tableList=
+    final tableList = providerService.tableList;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +68,11 @@ class _HomePageState extends State<HomePage> {
                   if (index == 0) {
                     return GestureDetector(
                       onTap: () {
-                        print("All selected");
+                        providerService.getTableGetId(
+                          MyData.branchCode,
+                          '',
+                          index,
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -89,10 +95,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   } else {
-                    final zone = zoneList[index - 1];
+                    final item = zoneList[index - 1];
+                    print("result: ${item.zoneCode}");
                     return GestureDetector(
                       onTap: () {
-                        print("result:${zone.zoneCode}");
+                        providerService.getTableGetId(
+                          MyData.branchCode,
+                          item.zoneCode.toString(),
+                          index,
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -104,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                         margin: const EdgeInsets.only(right: 8),
                         padding: const EdgeInsets.all(8),
                         child: Text(
-                          zone.zoneName.toString(),
+                          item.zoneName.toString(),
                           style: TextStyle(
                             color: providerService.selectedIndex != index
                                 ? const Color(0xFF606060)
@@ -127,43 +138,65 @@ class _HomePageState extends State<HomePage> {
                     providerService.getPullRefresh();
                   });
                 },
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: _crossAxisCount,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    childAspectRatio: 1,
-                  ),
-                  itemCount: 30,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          "table_id",
-                          arguments: '$index',
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: index == 3
-                              ? Color.fromARGB(255, 246, 248, 230)
-                              : Colors.white,
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
+                child: tableList.isNotEmpty
+                    ? GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: _crossAxisCount,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
+                          childAspectRatio: 1,
                         ),
-                        child: Center(
-                          child: Text(
-                            'T$index',
-                            style: const TextStyle(
-                              fontSize: 18,
+                        itemCount: tableList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final item = tableList[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                "table_id",
+                                arguments: '$index',
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: item.tableStatus == "2"
+                                    ? Color.fromARGB(255, 246, 248, 230)
+                                    : Colors.white,
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${item.tableName}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: const Column(
+                                children: [
+                                  Icon(
+                                    Icons.search_off,
+                                    size: 70,
+                                  ),
+                                  Text("( ບໍ່ມີຂໍ້ມູນ")
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
               ),
             ),
             const SizedBox(height: 60),
