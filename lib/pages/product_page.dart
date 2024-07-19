@@ -1,5 +1,8 @@
+import 'package:azor/services/provider_service.dart';
 import 'package:flutter/material.dart';
 import 'package:card_loading/card_loading.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({Key? key}) : super(key: key);
@@ -16,7 +19,11 @@ class _ProductListState extends State<ProductList> {
   @override
   void initState() {
     super.initState();
-    // Simulate a network request or data loading delay
+
+    final providerService =
+        Provider.of<ProviderService>(context, listen: false);
+    providerService.getCategory();
+
     Future.delayed(Duration(seconds: 3), () {
       setState(() {
         isLoading = false;
@@ -54,6 +61,19 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)?.settings.arguments as String?;
+    String tableCode = '';
+    String tableName = '';
+
+    if (arguments != null) {
+      final args = arguments.split(',');
+      tableCode = args[0];
+      tableName = args[1];
+    }
+
+    final providerService = Provider.of<ProviderService>(context);
+    final categoryList = providerService.categoryList;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -74,9 +94,9 @@ class _ProductListState extends State<ProductList> {
             ),
           ),
         ),
-        title: const Text(
-          "ເບີໂຕະ 1",
-          style: TextStyle(
+        title: Text(
+          "ເບີໂຕະ ${tableName.toString()}",
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 30,
             fontWeight: FontWeight.w700,
@@ -102,13 +122,15 @@ class _ProductListState extends State<ProductList> {
             SizedBox(
               height: 165,
               child: PageView.builder(
-                itemCount: (dataList.length / 8).ceil(),
+                itemCount: (categoryList.length / 8).ceil(),
                 itemBuilder: (context, pageIndex) {
                   final startIndex = pageIndex * 8;
                   final endIndex = startIndex + 8;
-                  final sublist = dataList.sublist(
+                  final sublist = categoryList.sublist(
                     startIndex,
-                    endIndex < dataList.length ? endIndex : dataList.length,
+                    endIndex < categoryList.length
+                        ? endIndex
+                        : categoryList.length,
                   );
 
                   return GridView.builder(
@@ -122,48 +144,29 @@ class _ProductListState extends State<ProductList> {
                     itemCount: sublist.length,
                     itemBuilder: (context, index) {
                       final item = sublist[index];
-                      String text;
-                      IconData icon;
-                      Color cardColor = Colors.white;
-
-                      if (item == 0) {
-                        text = " ທັງໝົດ ";
-                        icon = Icons.sort;
-                      } else if (item == 1) {
-                        text = " ໝວດເຂົ້າ ";
-                        icon = Icons.sticky_note_2;
-                        cardColor = Colors.blue;
-                      } else if (item == 2) {
-                        text = " ໝວດເບຍ ";
-                        icon = Icons.no_drinks;
-                      } else if (item == 3) {
-                        text = " ໝວດເຫຼົ້າ ";
-                        icon = Icons.local_drink;
-                      } else if (item == 4) {
-                        text = " ໝວດນໍ້າດຶ່ມ5555555555555 ";
-                        icon = Icons.local_drink;
-                      } else {
-                        text = " ຊັ້ນລຸ່ມ ";
-                        icon = Icons.room;
-                      }
-
                       return Card(
                         margin: const EdgeInsets.all(2),
-                        color: cardColor,
+                        color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(
-                              icon,
-                              size: 24,
+                            // Icon(
+                            //   Icons.sort,
+                            //   size: 24,
+                            //   color: item == 1 ? Colors.white : Colors.black,
+                            // ),
+                            SvgPicture.network(
+                              'https://example.com/path/to/your/search.svg',
                               color: item == 1 ? Colors.white : Colors.black,
+                              height: 24.0,
+                              width: 24.0,
                             ),
                             const SizedBox(height: 1),
                             Text(
-                              text.toString(),
+                              item.cateName.toString(),
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -182,7 +185,7 @@ class _ProductListState extends State<ProductList> {
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 2),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(

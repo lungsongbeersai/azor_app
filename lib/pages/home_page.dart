@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
                     );
                   } else {
                     final item = zoneList[index - 1];
-                    print("result: ${item.zoneCode}");
                     return GestureDetector(
                       onTap: () {
                         EasyLoading.show(status: 'ປະມວນຜົນ...');
@@ -157,7 +156,8 @@ class _HomePageState extends State<HomePage> {
                               Navigator.pushNamed(
                                 context,
                                 "table_id",
-                                arguments: '$index',
+                                arguments:
+                                    '${item.tableCode},${item.tableName}',
                               );
                             },
                             child: Container(

@@ -1,3 +1,4 @@
+import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
@@ -10,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProviderService extends ChangeNotifier {
   List<ZoneModel> zoneList = [];
   List<TableModel> tableList = [];
+  List<CategoryModel> categoryList = [];
   int selectedIndex = 0;
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
@@ -92,9 +94,25 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  getCategory() async {
+    try {
+      categoryList = await APIService().categoryApi();
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching table: $e');
+    }
+  }
+
+  ProviderService() {
+    getZone();
+    getTable();
+    getCategory();
+  }
+
   getPullRefresh() {
     getZone();
     selectedIndex = 0;
     getTable();
+    getCategory();
   }
 }

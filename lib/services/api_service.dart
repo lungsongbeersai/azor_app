@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
@@ -81,15 +82,25 @@ class APIService {
       throw Exception(
           'Failed to fetch data, status code: ${response.statusCode}');
     }
+  }
 
-    // if (response.statusCode == 200) {
-    //   tableList = (json.decode(response.body) as List)
-    //       .map((e) => TableModel.fromJson(e))
-    //       .toList();
-    //   return tableList;
-    // } else {
-    //   throw Exception(
-    //       'Failed to fetch exercise, status code: ${response.statusCode}');
-    // }
+  Future<List<CategoryModel>> categoryApi() async {
+    List<CategoryModel> categoryList = [];
+    final http.Response response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?api_category'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      categoryList = (json.decode(response.body) as List)
+          .map((e) => CategoryModel.fromJson(e))
+          .toList();
+      return categoryList;
+    } else {
+      throw Exception(
+          'Failed to fetch exercise, status code: ${response.statusCode}');
+    }
   }
 }
