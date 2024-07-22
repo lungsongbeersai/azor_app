@@ -1,6 +1,7 @@
 import 'package:azor/services/provider_service.dart';
 import 'package:flutter/material.dart';
 import 'package:card_loading/card_loading.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -22,7 +23,7 @@ class _ProductListState extends State<ProductList> {
 
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
-    providerService.getCategory();
+    providerService.getCategory(0);
 
     Future.delayed(Duration(seconds: 3), () {
       setState(() {
@@ -144,38 +145,49 @@ class _ProductListState extends State<ProductList> {
                     itemCount: sublist.length,
                     itemBuilder: (context, index) {
                       final item = sublist[index];
-                      return Card(
-                        margin: const EdgeInsets.all(2),
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            // Icon(
-                            //   Icons.sort,
-                            //   size: 24,
-                            //   color: item == 1 ? Colors.white : Colors.black,
-                            // ),
-                            SvgPicture.network(
-                              '${item.cateIcon}',
-                              color: item == 1 ? Colors.white : Colors.black,
-                              height: 24.0,
-                              width: 24.0,
-                            ),
-                            const SizedBox(height: 1),
-                            Text(
-                              item.cateName.toString(),
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: item == 1 ? Colors.white : Colors.black,
-                                fontSize: 12,
+                      return GestureDetector(
+                        onTap: () {
+                          EasyLoading.show(status: 'ປະມວນຜົນ...');
+                          providerService.getProduct(
+                              item.cateCode.toString(), index);
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.all(2),
+                          color: providerService.selectedIndex != index
+                              ? Colors.white
+                              : Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SvgPicture.network(
+                                '${item.cateIcon}',
+                                colorFilter: ColorFilter.mode(
+                                  providerService.selectedIndex != index
+                                      ? Colors.black
+                                      : Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                                height: 24.0,
+                                width: 24.0,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 1),
+                              Text(
+                                item.cateName.toString(),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: providerService.selectedIndex != index
+                                      ? Colors.black
+                                      : Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -237,7 +249,7 @@ class _ProductListState extends State<ProductList> {
 
                         final productName = 'ເບຍລາວແກ້ວໃຫຍ່ 150 mol';
                         String images = "";
-                        print("result:${index}");
+                        // print("result:${index}");
                         if (index == 0) {
                           images = "assets/images/khao.JPG";
                         } else if (index == 1) {

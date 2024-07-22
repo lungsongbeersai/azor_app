@@ -1,5 +1,6 @@
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
+import 'package:azor/models/product_models.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
 import 'package:azor/services/api_service.dart';
@@ -12,6 +13,7 @@ class ProviderService extends ChangeNotifier {
   List<ZoneModel> zoneList = [];
   List<TableModel> tableList = [];
   List<CategoryModel> categoryList = [];
+  List<ProductListModel> productList = [];
   int selectedIndex = 0;
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
@@ -94,9 +96,26 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  getCategory() async {
+  getCategory(int itemActive) async {
+    selectedIndex = itemActive;
     try {
-      categoryList = await APIService().categoryApi();
+      categoryList = await APIService().categoryApi(
+        itemActive.toString(),
+      );
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching table: $e');
+    }
+  }
+
+  getProduct(String cateid, int itemActive) async {
+    selectedIndex = itemActive;
+    try {
+      productList = await APIService().productApi(
+        cateid.toString(),
+        itemActive.toString(),
+      );
+
       notifyListeners();
     } catch (e) {
       print('Error fetching table: $e');
@@ -106,13 +125,12 @@ class ProviderService extends ChangeNotifier {
   ProviderService() {
     getZone();
     getTable();
-    getCategory();
   }
 
   getPullRefresh() {
     getZone();
     selectedIndex = 0;
     getTable();
-    getCategory();
+    getCategory(0);
   }
 }

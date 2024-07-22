@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
+import 'package:azor/models/product_models.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
 import 'package:http/http.dart' as http;
@@ -84,13 +85,14 @@ class APIService {
     }
   }
 
-  Future<List<CategoryModel>> categoryApi() async {
+  Future<List<CategoryModel>> categoryApi(String itemActive) async {
     List<CategoryModel> categoryList = [];
     final http.Response response = await http.post(
       Uri.parse('${urlAPI.toString()}/?api_category'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
+      body: jsonEncode(<String, String>{'active': itemActive.toString()}),
     );
 
     if (response.statusCode == 200) {
@@ -101,6 +103,31 @@ class APIService {
     } else {
       throw Exception(
           'Failed to fetch exercise, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<List<ProductListModel>> productApi(
+      String cateid, String itemActive) async {
+    List<ProductListModel> productList = [];
+    final http.Response response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?api_productList'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'product_cate_fk': cateid.toString(),
+        'itemActive': itemActive.toString(),
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      productList = (json.decode(response.body) as List)
+          .map((e) => ProductListModel.fromJson(e))
+          .toList();
+      return productList;
+    } else {
+      throw Exception(
+          'Failed to fetch Product, status code: ${response.statusCode}');
     }
   }
 }
