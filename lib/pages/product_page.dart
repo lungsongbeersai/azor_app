@@ -25,7 +25,9 @@ class _ProductListState extends State<ProductList> {
         Provider.of<ProviderService>(context, listen: false);
     providerService.getCategory(0);
 
-    Future.delayed(Duration(seconds: 3), () {
+    providerService.getProduct('0', '', 0);
+
+    Future.delayed(const Duration(seconds: 3), () {
       setState(() {
         isLoading = false;
       });
@@ -53,12 +55,10 @@ class _ProductListState extends State<ProductList> {
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
       curve: Curves.easeInOut,
     );
   }
-
-  final List<int> dataList = List.generate(13, (index) => index + 1);
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +74,7 @@ class _ProductListState extends State<ProductList> {
 
     final providerService = Provider.of<ProviderService>(context);
     final categoryList = providerService.categoryList;
+    final productList = providerService.productList;
 
     return Scaffold(
       appBar: AppBar(
@@ -149,13 +150,15 @@ class _ProductListState extends State<ProductList> {
                         onTap: () {
                           EasyLoading.show(status: 'ປະມວນຜົນ...');
                           providerService.getProduct(
-                              item.cateCode.toString(), index);
+                              item.cateCode.toString(), '1', index);
+                          print(
+                              "result Data: ${providerService.selectedIndex}");
                         },
                         child: Card(
                           margin: const EdgeInsets.all(2),
-                          color: providerService.selectedIndex != index
-                              ? Colors.white
-                              : Colors.blue,
+                          color: providerService.selectedIndex == index
+                              ? Colors.blue
+                              : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
@@ -212,7 +215,9 @@ class _ProductListState extends State<ProductList> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   await Future.delayed(const Duration(seconds: 2));
-                  setState(() {});
+                  setState(() {
+                    providerService.getCategory(0);
+                  });
                 },
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -235,9 +240,9 @@ class _ProductListState extends State<ProductList> {
                         crossAxisCount: crossAxisCount,
                         crossAxisSpacing: 0,
                         mainAxisSpacing: 0,
-                        childAspectRatio: 0.78, // Adjust as needed
+                        childAspectRatio: 0.78,
                       ),
-                      itemCount: 1000,
+                      itemCount: productList.length,
                       itemBuilder: (BuildContext context, int index) {
                         if (isLoading) {
                           return const CardLoading(
@@ -247,25 +252,10 @@ class _ProductListState extends State<ProductList> {
                           );
                         }
 
-                        final productName = 'ເບຍລາວແກ້ວໃຫຍ່ 150 mol';
-                        String images = "";
-                        // print("result:${index}");
-                        if (index == 0) {
-                          images = "assets/images/khao.JPG";
-                        } else if (index == 1) {
-                          images = "assets/images/beer.png";
-                        } else if (index == 2) {
-                          images = "assets/images/beerlao.jpg";
-                        } else if (index == 3) {
-                          images = "assets/images/watter.jpeg";
-                        } else if (index == 4) {
-                          images = "assets/images/pepsi.jpeg";
-                        } else {
-                          images = "assets/images/azor.jpg";
-                        }
+                        final item = productList[index];
+
                         return GestureDetector(
                           onTap: () {
-                            // Handle product tap
                             Navigator.pushNamed(
                               context,
                               "detail",
@@ -274,24 +264,19 @@ class _ProductListState extends State<ProductList> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              // color: Color.fromARGB(255, 249, 247, 235),
                               border: Border.all(
-                                  color: Color.fromARGB(255, 244, 242, 242)),
-                              // borderRadius: BorderRadius.circular(8),
+                                color: const Color.fromARGB(255, 244, 242, 242),
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Product image (replace with actual image widget)
                                 Container(
                                   height: 170,
                                   decoration: BoxDecoration(
-                                    // borderRadius: BorderRadius.only(
-                                    //   topLeft: Radius.circular(8),
-                                    //   topRight: Radius.circular(8),
-                                    // ),
                                     image: DecorationImage(
-                                      image: AssetImage('${images}'),
+                                      image: NetworkImage(
+                                          item.productPathApi.toString()),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -302,13 +287,11 @@ class _ProductListState extends State<ProductList> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Product name
                                       const SizedBox(height: 4),
                                       Text(
-                                        productName,
-                                        style: TextStyle(
+                                        item.productName.toString(),
+                                        style: const TextStyle(
                                           fontSize: 15,
-                                          // fontWeight: FontWeight.bold,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,

@@ -104,33 +104,32 @@ class ProviderService extends ChangeNotifier {
       );
       notifyListeners();
     } catch (e) {
-      print('Error fetching table: $e');
+      EasyLoading.dismiss();
+      print('Error fetching Category: $e');
     }
   }
 
-  getProduct(String cateid, int itemActive) async {
+  getProduct(String cateid, String status, int itemActive) async {
     selectedIndex = itemActive;
     try {
       productList = await APIService().productApi(
         cateid.toString(),
+        status.toString(),
         itemActive.toString(),
       );
-
+      EasyLoading.dismiss();
       notifyListeners();
     } catch (e) {
-      print('Error fetching table: $e');
+      EasyLoading.dismiss();
+      print('Error fetching get Product: $e');
     }
-  }
-
-  ProviderService() {
-    getZone();
-    getTable();
   }
 
   getPullRefresh() {
     getZone();
     selectedIndex = 0;
     getTable();
-    getCategory(0);
+    getCategory(selectedIndex);
+    getProduct("", "", 1);
   }
 }

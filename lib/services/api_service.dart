@@ -107,7 +107,7 @@ class APIService {
   }
 
   Future<List<ProductListModel>> productApi(
-      String cateid, String itemActive) async {
+      String cateid, String status, String itemActive) async {
     List<ProductListModel> productList = [];
     final http.Response response = await http.post(
       Uri.parse('${urlAPI.toString()}/?api_productList'),
@@ -116,6 +116,7 @@ class APIService {
       },
       body: jsonEncode(<String, String>{
         'product_cate_fk': cateid.toString(),
+        'status': status.toString(),
         'itemActive': itemActive.toString(),
       }),
     );

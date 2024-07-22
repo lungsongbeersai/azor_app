@@ -1,25 +1,28 @@
 class ProductListModel {
-  String? cateCode;
-  String? cateName;
-  String? cateGroup;
-  String? cateIcon;
+  String? productPathApi;
+  String? productId;
+  String? productName;
+  String? productCateFk;
 
   ProductListModel(
-      {this.cateCode, this.cateName, this.cateGroup, this.cateIcon});
+      {this.productPathApi,
+      this.productId,
+      this.productName,
+      this.productCateFk});
 
   ProductListModel.fromJson(Map<String, dynamic> json) {
-    cateCode = json['cate_code'];
-    cateName = json['cate_name'];
-    cateGroup = json['cate_group'];
-    cateIcon = json['cate_icon'];
+    productPathApi = json['product_path_api'];
+    productId = json['product_id'];
+    productName = json['product_name'];
+    productCateFk = json['product_cate_fk'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['cate_code'] = this.cateCode;
-    data['cate_name'] = this.cateName;
-    data['cate_group'] = this.cateGroup;
-    data['cate_icon'] = this.cateIcon;
+    data['product_path_api'] = this.productPathApi;
+    data['product_id'] = this.productId;
+    data['product_name'] = this.productName;
+    data['product_cate_fk'] = this.productCateFk;
     return data;
   }
 }
