@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           "tap": (_) => const TapPage(),
           "table_id": (_) => const ProductList(),
           "search": (_) => const SearchPage(),
-          "detail": (_) => const ProductDetail(),
+          "product_detail": (_) => const ProductDetail(),
           "shopping_cart": (_) => const ShoppingCartPage(),
         },
       ),

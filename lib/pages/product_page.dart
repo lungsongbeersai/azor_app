@@ -151,8 +151,6 @@ class _ProductListState extends State<ProductList> {
                           EasyLoading.show(status: 'ປະມວນຜົນ...');
                           providerService.getProduct(
                               item.cateCode.toString(), '1', index);
-                          print(
-                              "result Data: ${providerService.selectedIndex}");
                         },
                         child: Card(
                           margin: const EdgeInsets.all(2),
@@ -217,96 +215,126 @@ class _ProductListState extends State<ProductList> {
                   await Future.delayed(const Duration(seconds: 2));
                   setState(() {
                     providerService.getCategory(0);
+                    providerService.getProduct('', '', 0);
                   });
                 },
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final maxWidth = constraints.maxWidth;
+                child: productList.isNotEmpty
+                    ? LayoutBuilder(
+                        builder: (context, constraints) {
+                          final maxWidth = constraints.maxWidth;
 
-                    int crossAxisCount;
-                    if (maxWidth >= 1200) {
-                      crossAxisCount = 5;
-                    } else if (maxWidth >= 840) {
-                      crossAxisCount = 4;
-                    } else if (maxWidth >= 600) {
-                      crossAxisCount = 3;
-                    } else {
-                      crossAxisCount = 2;
-                    }
+                          int crossAxisCount;
+                          if (maxWidth >= 1200) {
+                            crossAxisCount = 5;
+                          } else if (maxWidth >= 840) {
+                            crossAxisCount = 4;
+                          } else if (maxWidth >= 600) {
+                            crossAxisCount = 3;
+                          } else {
+                            crossAxisCount = 2;
+                          }
 
-                    return GridView.builder(
-                      controller: _scrollController,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 0,
-                        mainAxisSpacing: 0,
-                        childAspectRatio: 0.78,
-                      ),
-                      itemCount: productList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (isLoading) {
-                          return const CardLoading(
-                            height: 100,
-                            borderRadius: BorderRadius.all(Radius.circular(0)),
-                            margin: EdgeInsets.all(1),
-                          );
-                        }
-
-                        final item = productList[index];
-
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              "detail",
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: const Color.fromARGB(255, 244, 242, 242),
-                              ),
+                          return GridView.builder(
+                            controller: _scrollController,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              crossAxisSpacing: 0,
+                              mainAxisSpacing: 0,
+                              childAspectRatio: 0.78,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 170,
+                            itemCount: productList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (isLoading) {
+                                return const CardLoading(
+                                  height: 100,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(0)),
+                                  margin: EdgeInsets.all(1),
+                                );
+                              }
+
+                              final item = productList[index];
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    "product_detail",
+                                    arguments:
+                                        '${item.productId},${tableCode.toString()}',
+                                  );
+                                },
+                                child: Container(
                                   decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          item.productPathApi.toString()),
-                                      fit: BoxFit.cover,
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      color: const Color.fromARGB(
+                                          255, 244, 242, 242),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        item.productName.toString(),
-                                        style: const TextStyle(
-                                          fontSize: 15,
+                                      Container(
+                                        height: 170,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                item.productPathApi.toString()),
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                item.productName.toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ],
+                              );
+                            },
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: const Column(
+                                children: [
+                                  Icon(
+                                    Icons.search_off,
+                                    size: 70,
+                                  ),
+                                  Text("( ບໍ່ມີຂໍ້ມູນ )")
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+                          ],
+                        ),
+                      ),
               ),
             ),
           ],

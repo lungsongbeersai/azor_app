@@ -1,5 +1,6 @@
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
+import 'package:azor/models/product_getID_models.dart';
 import 'package:azor/models/product_models.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
@@ -14,6 +15,14 @@ class ProviderService extends ChangeNotifier {
   List<TableModel> tableList = [];
   List<CategoryModel> categoryList = [];
   List<ProductListModel> productList = [];
+  List<ProductGetId> productID = [];
+
+  int _quantity = 1;
+  String _selectedSize = '';
+
+  int get quantity => _quantity;
+  String get selectedSize => _selectedSize;
+
   int selectedIndex = 0;
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
@@ -63,6 +72,23 @@ class ProviderService extends ChangeNotifier {
     } catch (e) {
       print("Error wSharedPreferences: $e");
     }
+  }
+
+  void incrementQuantity() {
+    _quantity++;
+    notifyListeners();
+  }
+
+  void decrementQuantity() {
+    if (_quantity > 1) {
+      _quantity--;
+      notifyListeners();
+    }
+  }
+
+  void updateSelectedSize(String newSize) {
+    _selectedSize = newSize;
+    notifyListeners();
   }
 
   getZone() async {
@@ -124,6 +150,30 @@ class ProviderService extends ChangeNotifier {
       print('Error fetching get Product: $e');
     }
   }
+
+  Future<List<ProductGetId>> getProductID(String proid) async {
+    try {
+      final List<ProductGetId> products =
+          await APIService().productGetID(proid);
+      return products;
+    } catch (e) {
+      throw Exception('Failed to load product details: $e');
+    }
+  }
+
+  // Future<ProductGetId> getProductID(String proid) async {
+  //   try {
+  //     final List<ProductGetId> products =
+  //         await APIService().productGetID(proid);
+  //     if (products.isNotEmpty) {
+  //       return products.first;
+  //     } else {
+  //       throw Exception('No product found');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Failed to load product details: $e');
+  //   }
+  // }
 
   getPullRefresh() {
     getZone();
