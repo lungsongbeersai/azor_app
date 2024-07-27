@@ -142,7 +142,8 @@ class _ProductDetailState extends State<ProductDetail> {
                                     return _buildSizeOption(
                                       detail.sizeName.toString(),
                                       detail.proDetailCode.toString(),
-                                      MyData.formatnumber(detail.sPrice),
+                                      detail.sPrice.toString(),
+                                      detail.proDetailGift.toString(),
                                       providerService.selectedSize,
                                       (newSize) {
                                         providerService
@@ -343,8 +344,19 @@ class _ProductDetailState extends State<ProductDetail> {
     );
   }
 
-  Widget _buildSizeOption(String size, String sizeValue, String price,
-      String selectedSize, Function(String) onSizeChanged) {
+  Widget _buildSizeOption(
+    String size,
+    String sizeValue,
+    String price,
+    String discount,
+    String selectedSize,
+    Function(String) onSizeChanged,
+  ) {
+    double originalPrice = double.tryParse(price) ?? 0;
+    double discountValue = double.tryParse(discount) ?? 0;
+    double discountedPrice =
+        originalPrice - (originalPrice * (discountValue / 100));
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
@@ -353,13 +365,34 @@ class _ProductDetailState extends State<ProductDetail> {
       ),
       child: ListTile(
         title: Text(
-          size,
+          discountValue > 0 ? '$size ($discount%)' : size,
           style: const TextStyle(fontSize: 20),
         ),
-        subtitle: Text(
-          price,
-          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        ),
+        subtitle: discountValue > 0
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${MyData.formatnumber(originalPrice)}₭',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                  Text(
+                    '${MyData.formatnumber(discountedPrice)}₭',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              )
+            : Text(
+                '${MyData.formatnumber(originalPrice)}₭',
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              ),
         leading: Transform.scale(
           scale: 1.8,
           child: Radio<String>(

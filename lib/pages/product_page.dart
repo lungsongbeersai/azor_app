@@ -255,7 +255,6 @@ class _ProductListState extends State<ProductList> {
                               }
 
                               final item = productList[index];
-                              print("result ${item.productDiscount}");
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.pushNamed(
