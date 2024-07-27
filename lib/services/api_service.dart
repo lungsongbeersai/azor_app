@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
-import 'package:azor/models/product_getID_models.dart';
+import 'package:azor/models/product_getid_models.dart';
 import 'package:azor/models/product_models.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
@@ -133,7 +133,7 @@ class APIService {
     }
   }
 
-  Future<List<ProductGetId>> productGetID(String proid) async {
+  Future<List<ProductGetid>> productGetID(String proid) async {
     final response = await http.post(
       Uri.parse('${urlAPI.toString()}/?api_product_getId'),
       headers: <String, String>{
@@ -146,7 +146,7 @@ class APIService {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = json.decode(response.body);
-      return jsonList.map((e) => ProductGetId.fromJson(e)).toList();
+      return jsonList.map((e) => ProductGetid.fromJson(e)).toList();
     } else {
       throw Exception(
           'Failed to fetch Product, status code: ${response.statusCode}');

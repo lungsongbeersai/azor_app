@@ -1,6 +1,6 @@
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
-import 'package:azor/models/product_getID_models.dart';
+import 'package:azor/models/product_getid_models.dart';
 import 'package:azor/models/product_models.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
@@ -15,7 +15,7 @@ class ProviderService extends ChangeNotifier {
   List<TableModel> tableList = [];
   List<CategoryModel> categoryList = [];
   List<ProductListModel> productList = [];
-  List<ProductGetId> productID = [];
+  List<ProductGetid> productID = [];
 
   int _quantity = 1;
   String _selectedSize = '';
@@ -85,8 +85,18 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  void resetQuantity() {
+    _quantity = 1;
+    notifyListeners();
+  }
+
   void updateSelectedSize(String newSize) {
     _selectedSize = newSize;
+    notifyListeners();
+  }
+
+  void resetSelectedSize() {
+    _selectedSize = '';
     notifyListeners();
   }
 
@@ -150,9 +160,9 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  Future<List<ProductGetId>> getProductID(String proid) async {
+  Future<List<ProductGetid>> getProductID(String proid) async {
     try {
-      final List<ProductGetId> products =
+      final List<ProductGetid> products =
           await APIService().productGetID(proid);
       return products;
     } catch (e) {
@@ -181,9 +191,12 @@ class ProviderService extends ChangeNotifier {
         remark,
         userID);
     if (isSuccess == true) {
+      EasyLoading.dismiss();
+      resetQuantity();
       notifyListeners();
       return true;
     } else {
+      EasyLoading.dismiss();
       return false;
     }
   }

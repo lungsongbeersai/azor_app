@@ -1,7 +1,8 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
-import 'package:azor/models/product_getID_models.dart';
+import 'package:azor/models/product_getid_models.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 
@@ -13,7 +14,7 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  late Future<List<ProductGetId>> _productFuture;
+  late Future<List<ProductGetid>> _productFuture;
   String proID = '';
   String tableCode = '';
   ProductArray? selectedDT;
@@ -55,7 +56,7 @@ class _ProductDetailState extends State<ProductDetail> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: FutureBuilder<List<ProductGetId>>(
+        child: FutureBuilder<List<ProductGetid>>(
           future: _productFuture,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -73,7 +74,7 @@ class _ProductDetailState extends State<ProductDetail> {
               final products = snapshot.data!;
               final item = products.firstWhere(
                 (product) => product.productId == proID,
-                orElse: () => ProductGetId(
+                orElse: () => ProductGetid(
                   productId: 'N/A',
                   productName: 'N/A',
                   productPathApi: '',
@@ -91,15 +92,19 @@ class _ProductDetailState extends State<ProductDetail> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 260,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                      item.productPathApi.toString()),
-                                  fit: BoxFit.cover,
+                            Stack(
+                              children: [
+                                Container(
+                                  height: 260,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          item.productPathApi.toString()),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                             const SizedBox(height: 16),
                             Center(
@@ -130,6 +135,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   itemCount: item.productArray?.length ?? 0,
                                   itemBuilder: (context, index) {
                                     final detail = item.productArray?[index];
+
                                     if (detail == null) {
                                       return const SizedBox.shrink();
                                     }
@@ -160,6 +166,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               ),
                             ),
                             TextFormField(
+                              autofocus: false,
                               controller: textlController,
                               focusNode: textlFocusNode,
                               keyboardType: TextInputType.text,
@@ -239,41 +246,56 @@ class _ProductDetailState extends State<ProductDetail> {
                         ElevatedButton(
                           onPressed: selectedDT != null
                               ? () async {
-                                  // ทำงานต่อไปหาก selectedDT ไม่เป็น null
-                                  // print(
-                                  //     "result: ${selectedDT!.proDetailCode},${providerService.quantity.toString()},${proID.toString()},${textlController.text}");
-                                  // แสดงข้อความแจ้งเตือน
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   const SnackBar(
-                                  //     content:
-                                  //         Text('ເພີ່ມໃສ່ກະຕ໋າ ສໍາເລັດແລ້ວ'),
-                                  //   ),
-                                  // );
-                                  print(
-                                      'proDetailCode: ${selectedDT!.proDetailCode}');
-                                  print('sPrice: ${selectedDT!.sPrice}');
-                                  print(
-                                      'proDetailGift: ${selectedDT!.proDetailGift}');
-                                  print(
-                                      'productCutStock: ${selectedDT!.productCutStock}');
-                                  print(
-                                      'providerService.quantity: ${providerService.quantity}');
-
-                                  // final isSuccess =
-                                  //     await providerService.addCart(
-                                  //         tableCode,
-                                  //         MyData.branchCode,
-                                  //         selectedDT!.proDetailCode.toString(),
-                                  //         selectedDT!.sPrice.toString(),
-                                  //         int.parse(providerService.quantity
-                                  //             .toString()),
-                                  //         int.parse(selectedDT!.proDetailGift
-                                  //             .toString()),
-                                  //         selectedDT!.productCutStock
-                                  //             .toString(),
-                                  //         textlController.text,
-                                  //         MyData.usersID);
-                                  // print(isSuccess);
+                                  EasyLoading.show(status: 'ປະມວນຜົນ...');
+                                  final isSuccess =
+                                      await providerService.addCart(
+                                          tableCode,
+                                          MyData.branchCode,
+                                          selectedDT!.proDetailCode.toString(),
+                                          selectedDT!.sPrice.toString(),
+                                          int.parse(providerService.quantity
+                                              .toString()),
+                                          int.parse(selectedDT!.proDetailGift
+                                              .toString()),
+                                          selectedDT!.productCutStock
+                                              .toString(),
+                                          textlController.text,
+                                          MyData.usersID);
+                                  if (isSuccess) {
+                                    providerService.resetSelectedSize();
+                                    setState(() {
+                                      selectedDT = null;
+                                    });
+                                    textlController.clear();
+                                    textlFocusNode.unfocus();
+                                    AwesomeDialog(
+                                      context: context,
+                                      animType: AnimType.leftSlide,
+                                      headerAnimationLoop: false,
+                                      dialogType: DialogType.success,
+                                      showCloseIcon: true,
+                                      title: 'ແຈ້ງເຕືອນ',
+                                      desc: 'ເພີ່ມເຂົ້າກະຕ໋າສໍາເລັດແລ້ວ',
+                                      btnOkOnPress: () {
+                                        debugPrint('OnClcik');
+                                      },
+                                      btnOkText: 'ປິດ',
+                                      btnOkIcon: Icons.check_circle,
+                                    ).show();
+                                  } else {
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.error,
+                                      animType: AnimType.rightSlide,
+                                      headerAnimationLoop: true,
+                                      title: 'ແຈ້ງເຕືອນ',
+                                      desc: 'ເພີ່ມຂໍໍໍມູນຫຼົ້ມເຫຼວ',
+                                      btnOkOnPress: () {},
+                                      btnOkIcon: Icons.cancel,
+                                      btnOkColor: Colors.red,
+                                      btnOkText: 'ປິດ',
+                                    ).show();
+                                  }
                                 }
                               : () {
                                   AwesomeDialog(

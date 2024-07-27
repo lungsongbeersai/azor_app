@@ -255,7 +255,7 @@ class _ProductListState extends State<ProductList> {
                               }
 
                               final item = productList[index];
-
+                              print("result ${item.productDiscount}");
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.pushNamed(
@@ -277,15 +277,45 @@ class _ProductListState extends State<ProductList> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        height: 170,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                item.productPathApi.toString()),
-                                            fit: BoxFit.cover,
+                                      Stack(
+                                        children: [
+                                          Container(
+                                            height: 170,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(item
+                                                    .productPathApi
+                                                    .toString()),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          if (item.productDiscount == "on")
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: Container(
+                                                margin: const EdgeInsets.all(8),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 6),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Text(
+                                                  '10%',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -311,6 +341,7 @@ class _ProductListState extends State<ProductList> {
                                   ),
                                 ),
                               );
+                              ;
                             },
                           );
                         },

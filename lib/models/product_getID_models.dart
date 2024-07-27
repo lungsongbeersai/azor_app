@@ -1,16 +1,16 @@
-class ProductGetId {
+class ProductGetid {
   String? productId;
   String? productName;
   String? productPathApi;
   List<ProductArray>? productArray;
 
-  ProductGetId(
+  ProductGetid(
       {this.productId,
       this.productName,
       this.productPathApi,
       this.productArray});
 
-  ProductGetId.fromJson(Map<String, dynamic> json) {
+  ProductGetid.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
     productName = json['product_name'];
     productPathApi = json['product_path_api'];
