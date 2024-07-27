@@ -10,21 +10,47 @@ import 'package:http/http.dart' as http;
 
 class APIService {
   String urlAPI = "http://azor.plc.la/api";
-  Future<LoginInfo> login(String email, String password) async {
-    final http.Response response =
-        await http.post(Uri.parse('${urlAPI.toString()}/?api_login'),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(<String, String>{
-              'users_name': email,
-              'users_password': password,
-            }));
+  // Future<LoginInfo> login(String email, String password) async {
+  //   final http.Response response =
+  //       await http.post(Uri.parse('${urlAPI.toString()}/?api_login'),
+  //           headers: <String, String>{
+  //             'Content-Type': 'application/json; charset=UTF-8',
+  //           },
+  //           body: jsonEncode(<String, String>{
+  //             'users_name': email,
+  //             'users_password': password,
+  //           }));
 
-    if (response.statusCode == 200) {
-      return LoginInfo.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to Login.');
+  //   if (response.statusCode == 200) {
+  //     return LoginInfo.fromJson(jsonDecode(response.body));
+  //   } else {
+  //     throw Exception('Failed to Login.');
+  //   }
+  // }
+  Future<LoginInfo> login(String email, String password) async {
+    try {
+      final http.Response response = await http.post(
+        Uri.parse('${urlAPI.toString()}/?api_login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'users_name': email,
+          'users_password': password,
+        }),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return LoginInfo.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception('Failed to Login. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error during login: $e');
+      throw Exception('Failed to login due to an error: $e');
     }
   }
 
