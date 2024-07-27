@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:azor/models/product_getID_models.dart';
@@ -14,7 +15,8 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetail> {
   late Future<List<ProductGetId>> _productFuture;
   String proID = '';
-  ProductArray? selectedDetail;
+  String tableCode = '';
+  ProductArray? selectedDT;
   FocusNode textlFocusNode = FocusNode();
   TextEditingController textlController = TextEditingController();
 
@@ -26,6 +28,7 @@ class _ProductDetailState extends State<ProductDetail> {
       final args = arguments.split(',');
       if (args.isNotEmpty) {
         proID = args[0];
+        tableCode = args[1];
       }
     }
     _productFuture = Provider.of<ProviderService>(context).getProductID(proID);
@@ -139,7 +142,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                         providerService
                                             .updateSelectedSize(newSize);
                                         setState(() {
-                                          selectedDetail = detail;
+                                          selectedDT = detail;
                                         });
                                       },
                                     );
@@ -234,17 +237,58 @@ class _ProductDetailState extends State<ProductDetail> {
                           ],
                         ),
                         ElevatedButton(
-                          onPressed: selectedDetail != null
-                              ? () {
-                                  print(
-                                      "result: ${selectedDetail!.proDetailCode},${providerService.quantity.toString()},${proID.toString()},${textlController.text}");
+                          onPressed: selectedDT != null
+                              ? () async {
+                                  // ทำงานต่อไปหาก selectedDT ไม่เป็น null
+                                  // print(
+                                  //     "result: ${selectedDT!.proDetailCode},${providerService.quantity.toString()},${proID.toString()},${textlController.text}");
+                                  // แสดงข้อความแจ้งเตือน
                                   // ScaffoldMessenger.of(context).showSnackBar(
                                   //   const SnackBar(
-                                  //     content: Text('ເພີ່ມໃສ່ກະຕ໋າ ສໍາເລັດແລ້ວ'),
+                                  //     content:
+                                  //         Text('ເພີ່ມໃສ່ກະຕ໋າ ສໍາເລັດແລ້ວ'),
                                   //   ),
                                   // );
+                                  print(
+                                      'proDetailCode: ${selectedDT!.proDetailCode}');
+                                  print('sPrice: ${selectedDT!.sPrice}');
+                                  print(
+                                      'proDetailGift: ${selectedDT!.proDetailGift}');
+                                  print(
+                                      'productCutStock: ${selectedDT!.productCutStock}');
+                                  print(
+                                      'providerService.quantity: ${providerService.quantity}');
+
+                                  // final isSuccess =
+                                  //     await providerService.addCart(
+                                  //         tableCode,
+                                  //         MyData.branchCode,
+                                  //         selectedDT!.proDetailCode.toString(),
+                                  //         selectedDT!.sPrice.toString(),
+                                  //         int.parse(providerService.quantity
+                                  //             .toString()),
+                                  //         int.parse(selectedDT!.proDetailGift
+                                  //             .toString()),
+                                  //         selectedDT!.productCutStock
+                                  //             .toString(),
+                                  //         textlController.text,
+                                  //         MyData.usersID);
+                                  // print(isSuccess);
                                 }
-                              : null,
+                              : () {
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.error,
+                                    animType: AnimType.rightSlide,
+                                    headerAnimationLoop: true,
+                                    title: 'ແຈ້ງເຕືອນ',
+                                    desc: 'ກະລຸນາເລືອກຢ່າງນ້ອຍ 1 ລາຍການ',
+                                    btnOkOnPress: () {},
+                                    btnOkIcon: Icons.cancel,
+                                    btnOkColor: Colors.red,
+                                    btnOkText: 'ປິດ',
+                                  ).show();
+                                },
                           style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.all<Color>(Colors.blue),

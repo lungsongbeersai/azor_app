@@ -39,13 +39,22 @@ class ProductArray {
   String? proDetailCode;
   String? sizeName;
   int? sPrice;
+  int? proDetailGift;
+  String? productCutStock;
 
-  ProductArray({this.proDetailCode, this.sizeName, this.sPrice});
+  ProductArray(
+      {this.proDetailCode,
+      this.sizeName,
+      this.sPrice,
+      this.proDetailGift,
+      this.productCutStock});
 
   ProductArray.fromJson(Map<String, dynamic> json) {
     proDetailCode = json['pro_detail_code'];
     sizeName = json['size_name'];
     sPrice = json['s_price'];
+    proDetailGift = json['pro_detail_gift'];
+    productCutStock = json['product_cut_stock'];
   }
 
   Map<String, dynamic> toJson() {
@@ -53,6 +62,8 @@ class ProductArray {
     data['pro_detail_code'] = this.proDetailCode;
     data['size_name'] = this.sizeName;
     data['s_price'] = this.sPrice;
+    data['pro_detail_gift'] = this.proDetailGift;
+    data['product_cut_stock'] = this.productCutStock;
     return data;
   }
 }

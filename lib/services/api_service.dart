@@ -10,47 +10,21 @@ import 'package:http/http.dart' as http;
 
 class APIService {
   String urlAPI = "http://azor.plc.la/api";
-  // Future<LoginInfo> login(String email, String password) async {
-  //   final http.Response response =
-  //       await http.post(Uri.parse('${urlAPI.toString()}/?api_login'),
-  //           headers: <String, String>{
-  //             'Content-Type': 'application/json; charset=UTF-8',
-  //           },
-  //           body: jsonEncode(<String, String>{
-  //             'users_name': email,
-  //             'users_password': password,
-  //           }));
-
-  //   if (response.statusCode == 200) {
-  //     return LoginInfo.fromJson(jsonDecode(response.body));
-  //   } else {
-  //     throw Exception('Failed to Login.');
-  //   }
-  // }
   Future<LoginInfo> login(String email, String password) async {
-    try {
-      final http.Response response = await http.post(
-        Uri.parse('${urlAPI.toString()}/?api_login'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'users_name': email,
-          'users_password': password,
-        }),
-      );
+    final http.Response response =
+        await http.post(Uri.parse('${urlAPI.toString()}/?api_login'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              'users_name': email,
+              'users_password': password,
+            }));
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        return LoginInfo.fromJson(jsonDecode(response.body));
-      } else {
-        throw Exception('Failed to Login. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error during login: $e');
-      throw Exception('Failed to login due to an error: $e');
+    if (response.statusCode == 200) {
+      return LoginInfo.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to Login.');
     }
   }
 
@@ -173,6 +147,42 @@ class APIService {
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = json.decode(response.body);
       return jsonList.map((e) => ProductGetId.fromJson(e)).toList();
+    } else {
+      throw Exception(
+          'Failed to fetch Product, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<bool> addCart(
+      String billtable,
+      String billbranch,
+      String orderlistprocodefk,
+      String orderlistprice,
+      int orderlistqty,
+      int orderlistpercented,
+      String orderliststatuscook,
+      String orderlistnoteremark,
+      String orderlistcreateby) async {
+    final response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?insertOrder'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "bill_table": billtable.toString(),
+        "bill_branch": billbranch.toString(),
+        "order_list_pro_code_fk": orderlistprocodefk.toString(),
+        "order_list_price": orderlistprice.toString(),
+        "order_list_qty": orderlistqty.toString(),
+        "order_list_percented": orderlistpercented.toString(),
+        "order_list_status_cook": orderliststatuscook.toString(),
+        "order_list_note_remark": orderlistnoteremark.toString(),
+        "order_list_create_by": orderlistcreateby.toString()
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
     } else {
       throw Exception(
           'Failed to fetch Product, status code: ${response.statusCode}');

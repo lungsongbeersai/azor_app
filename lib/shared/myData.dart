@@ -16,4 +16,13 @@ class MyData {
   static String formatDate(DateTime date) {
     return DateFormat('dd/MM/yyyy').format(date);
   }
+
+  int? parseInt(String value) {
+    try {
+      return int.parse(value);
+    } catch (e) {
+      print('Error parsing int: $e');
+      return null;
+    }
+  }
 }

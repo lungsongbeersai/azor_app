@@ -56,7 +56,6 @@ class ProviderService extends ChangeNotifier {
       MyData.branchName = resp.branchName.toString();
       MyData.statusCode = resp.statusCode.toString();
       MyData.statusName = resp.statusName.toString();
-
       return true;
     } else {
       massageMsg = resp.message.toString();
@@ -161,19 +160,33 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  // Future<ProductGetId> getProductID(String proid) async {
-  //   try {
-  //     final List<ProductGetId> products =
-  //         await APIService().productGetID(proid);
-  //     if (products.isNotEmpty) {
-  //       return products.first;
-  //     } else {
-  //       throw Exception('No product found');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Failed to load product details: $e');
-  //   }
-  // }
+  Future<bool> addCart(
+      String billtable,
+      String branchCode,
+      String orderlistprocodefk,
+      String orderlistprice,
+      int orderlistqty,
+      int orderlistpercented,
+      String statuscook,
+      String remark,
+      String userID) async {
+    final isSuccess = await APIService().addCart(
+        billtable,
+        branchCode,
+        orderlistprocodefk,
+        orderlistprice,
+        orderlistqty,
+        orderlistpercented,
+        statuscook,
+        remark,
+        userID);
+    if (isSuccess == true) {
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   getPullRefresh() {
     getZone();
