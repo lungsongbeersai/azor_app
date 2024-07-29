@@ -126,24 +126,27 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                      "${MyData.formatnumber(item.orderListPrice.toString())} x ${item.orderListQty}"),
-                                                  Row(
-                                                    children: [
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 15,
-                                                        ),
-                                                        child: Text(
-                                                          "${MyData.formatnumber(item.orderListTotal.toString())}₭ ",
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
+                                                    "${MyData.formatnumber(item.orderListPrice.toString())} x ${item.orderListQty}",
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.black45,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 15),
+                                                    child: Text(
+                                                      "${MyData.formatnumber(item.orderListTotal.toString())}₭",
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black87,
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),

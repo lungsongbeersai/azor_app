@@ -327,7 +327,7 @@ class _ProductListState extends State<ProductList> {
                                               Text(
                                                 item.productName.toString(),
                                                 style: const TextStyle(
-                                                  fontSize: 15,
+                                                  fontSize: 16,
                                                 ),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -384,20 +384,57 @@ class _ProductListState extends State<ProductList> {
               ),
             ),
           const SizedBox(height: 10),
-          FloatingActionButton(
-            backgroundColor: Colors.black,
-            onPressed: () async {
-              Navigator.pushNamed(
-                context,
-                "shopping_cart",
-                arguments: ' ${tableCode.toString()} ',
-              );
-            },
-            child: const Icon(
-              Icons.shopping_cart,
-              color: Colors.white,
-              size: 30,
-            ),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              FloatingActionButton(
+                backgroundColor: Colors.black,
+                onPressed: () async {
+                  Navigator.pushNamed(
+                    context,
+                    "shopping_cart",
+                    arguments: ' ${tableCode.toString()} ',
+                  );
+                },
+                child: const Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+              Positioned(
+                right: -5,
+                top: -5,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: 10 > 0 ? Colors.red : Colors.grey,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 20,
+                    minHeight: 20,
+                  ),
+                  child: Text(
+                    '${providerService.cartList.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
