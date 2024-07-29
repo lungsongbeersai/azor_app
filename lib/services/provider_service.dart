@@ -196,6 +196,7 @@ class ProviderService extends ChangeNotifier {
     if (isSuccess == true) {
       EasyLoading.dismiss();
       resetQuantity();
+      getTable();
       notifyListeners();
       return true;
     } else {
@@ -245,6 +246,7 @@ class ProviderService extends ChangeNotifier {
       EasyLoading.dismiss();
       getCartList(table);
       resetQuantity();
+      getTable();
       notifyListeners();
       return true;
     } else {
