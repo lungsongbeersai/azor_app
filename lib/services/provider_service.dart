@@ -223,6 +223,22 @@ class ProviderService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> getupdateCart(String orderlistcode, int orderlistpercented,
+      String option, String table) async {
+    final isSuccess = await APIService()
+        .updateCart(orderlistcode, orderlistpercented, option, table);
+    if (isSuccess == true) {
+      EasyLoading.dismiss();
+      getCartList(table);
+      resetQuantity();
+      notifyListeners();
+      return true;
+    } else {
+      EasyLoading.dismiss();
+      return false;
+    }
+  }
+
   getPullRefresh() {
     getZone();
     selectedIndex = 0;

@@ -170,7 +170,17 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                         icon: const Icon(
                                                             Icons.delete,
                                                             size: 16),
-                                                        onPressed: () {},
+                                                        onPressed: () {
+                                                          providerService
+                                                              .getupdateCart(
+                                                            item.orderListCode
+                                                                .toString(),
+                                                            item.orderListPercented ??
+                                                                0,
+                                                            'decrease',
+                                                            tableID,
+                                                          );
+                                                        },
                                                         color: Colors.redAccent,
                                                       ),
                                                     ),
@@ -200,6 +210,15 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                                   1) {
                                                                 return;
                                                               }
+                                                              providerService
+                                                                  .getupdateCart(
+                                                                item.orderListCode
+                                                                    .toString(),
+                                                                item.orderListPercented ??
+                                                                    0,
+                                                                'increase',
+                                                                tableID,
+                                                              );
                                                             },
                                                             color: Colors.grey,
                                                           ),

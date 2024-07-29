@@ -213,4 +213,30 @@ class APIService {
           'Failed to fetch Product, status code: ${response.statusCode}');
     }
   }
+
+  Future<bool> updateCart(
+    String orderlistcode,
+    int orderlistpercented,
+    String option,
+    String table,
+  ) async {
+    final response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?update_cart'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "order_list_code": orderlistcode.toString(),
+        "order_list_percented": orderlistpercented.toString(),
+        "option": option.toString(),
+        "table": table.toString()
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception('Failed to update qty: ${response.statusCode}');
+    }
+  }
 }
