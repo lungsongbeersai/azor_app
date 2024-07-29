@@ -239,6 +239,20 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  Future<bool> deleteCart(String orderlistcode, String table) async {
+    final isSuccess = await APIService().deleteCart(orderlistcode, table);
+    if (isSuccess == true) {
+      EasyLoading.dismiss();
+      getCartList(table);
+      resetQuantity();
+      notifyListeners();
+      return true;
+    } else {
+      EasyLoading.dismiss();
+      return false;
+    }
+  }
+
   getPullRefresh() {
     getZone();
     selectedIndex = 0;

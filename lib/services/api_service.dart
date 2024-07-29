@@ -229,7 +229,26 @@ class APIService {
         "order_list_code": orderlistcode.toString(),
         "order_list_percented": orderlistpercented.toString(),
         "option": option.toString(),
-        "table": table.toString()
+        "order_list_table_fk": table.toString()
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception('Failed to update qty: ${response.statusCode}');
+    }
+  }
+
+  Future<bool> deleteCart(String orderlistcode, String table) async {
+    final response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?delete_cart'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "order_list_code": orderlistcode.toString(),
+        "order_list_table_fk": orderlistcode.toString(),
       }),
     );
 

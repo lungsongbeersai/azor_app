@@ -172,12 +172,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                             size: 16),
                                                         onPressed: () {
                                                           providerService
-                                                              .getupdateCart(
+                                                              .deleteCart(
                                                             item.orderListCode
                                                                 .toString(),
-                                                            item.orderListPercented ??
-                                                                0,
-                                                            'decrease',
                                                             tableID,
                                                           );
                                                         },
@@ -216,7 +213,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                                     .toString(),
                                                                 item.orderListPercented ??
                                                                     0,
-                                                                'increase',
+                                                                'decrease',
                                                                 tableID,
                                                               );
                                                             },
@@ -256,7 +253,17 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                             icon: const Icon(
                                                                 Icons.add,
                                                                 size: 16),
-                                                            onPressed: () {},
+                                                            onPressed: () {
+                                                              providerService
+                                                                  .getupdateCart(
+                                                                item.orderListCode
+                                                                    .toString(),
+                                                                item.orderListPercented ??
+                                                                    0,
+                                                                'increase',
+                                                                tableID,
+                                                              );
+                                                            },
                                                             color: Colors.grey,
                                                           ),
                                                         ),
