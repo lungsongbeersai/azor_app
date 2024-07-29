@@ -1,3 +1,4 @@
+import 'package:azor/models/cart_models.dart';
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
 import 'package:azor/models/product_getid_models.dart';
@@ -16,6 +17,7 @@ class ProviderService extends ChangeNotifier {
   List<CategoryModel> categoryList = [];
   List<ProductListModel> productList = [];
   List<ProductGetid> productID = [];
+  List<CartModels> cartList = [];
 
   int _quantity = 1;
   String _selectedSize = '';
@@ -198,6 +200,15 @@ class ProviderService extends ChangeNotifier {
     } else {
       EasyLoading.dismiss();
       return false;
+    }
+  }
+
+  getCart(String tableID, String branchID) async {
+    try {
+      cartList = await APIService().cartApi(tableID, branchID);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching Cart: $e');
     }
   }
 

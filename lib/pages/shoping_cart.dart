@@ -1,4 +1,7 @@
+import 'package:azor/services/provider_service.dart';
+import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ShoppingCartPage extends StatefulWidget {
   const ShoppingCartPage({super.key});
@@ -7,302 +10,283 @@ class ShoppingCartPage extends StatefulWidget {
   State<ShoppingCartPage> createState() => _ShoppingCartPageState();
 }
 
-class _ShoppingCartPageState extends State<ShoppingCartPage> {
-  List<CartItem> cartItems = [
-    CartItem(
-        name: "ເບຍລາວແກ້ວໃຫຍ່ 600 ml",
-        image: 'assets/images/beer.png',
-        price: 3000,
-        quantity: 1),
-    CartItem(
-        name: "ເບຍລາວແກ້ວນ້ອຍ ບັນຈຸ 1000 ml",
-        image: 'assets/images/beer.png',
-        price: 4000,
-        quantity: 2),
-    CartItem(
-        name: "ເບຍໄຮນີເກັນແກ້ວໃຫຍ່ ບັນຈຸ 1000 ml 1234567895200000",
-        image: 'assets/images/beer.png',
-        price: 5000,
-        quantity: 1),
-    CartItem(
-        name: "ສິນຄ້າທີ່ 1",
-        image: 'assets/images/beer.png',
-        price: 3000,
-        quantity: 1),
-    CartItem(
-        name: "ສິນຄ້າທີ່ 2",
-        image: 'assets/images/beer.png',
-        price: 4000,
-        quantity: 2),
-    CartItem(
-        name: "ສິນຄ້າທີ່ 3",
-        image: 'assets/images/beer.png',
-        price: 5000,
-        quantity: 1),
-  ];
+class _ShoppingCartPageState extends State<ShoppingCartPage>
+    with SingleTickerProviderStateMixin {
+  double bottomSize = 80;
+  String tableID = "";
 
-  void _incrementQuantity(int index) {
-    setState(() {
-      cartItems[index].quantity++;
-    });
-  }
-
-  void _decrementQuantity(int index) {
-    setState(() {
-      if (cartItems[index].quantity > 1) {
-        cartItems[index].quantity--;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final arguments = ModalRoute.of(context)?.settings.arguments as String?;
+    if (arguments != null) {
+      final args = arguments.split(',');
+      if (args.isNotEmpty) {
+        tableID = args[0];
       }
-    });
-  }
-
-  void _deleteItem(int index) {
-    setState(() {
-      cartItems.removeAt(index);
-    });
-  }
-
-  int _calculateTotal() {
-    return cartItems.fold(0, (sum, item) => sum + item.price * item.quantity);
+    }
+    final providerService =
+        Provider.of<ProviderService>(context, listen: false);
+    providerService.getCart(tableID, MyData.branchCode);
   }
 
   @override
   Widget build(BuildContext context) {
+    final providerService = Provider.of<ProviderService>(context);
+    final carts = providerService.cartList;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
-          "ກະຕ໋າຂອງຂ້ອຍ",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-          ),
+          "ກະຕ໋າສິນຄ້າ",
+          style: TextStyle(color: Colors.white),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) {
-                    final item = cartItems[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                      color: Colors.white,
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+      body: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SingleChildScrollView(
+            child: Column(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height -
+                  kToolbarHeight -
+                  MediaQuery.of(context).padding.top -
+                  kBottomNavigationBarHeight -
+                  bottomSize,
+              child: Container(
+                  margin: const EdgeInsets.only(bottom: 5),
+                  child:
+                      // carts.isNotEmpty
+                      //     ?
+                      ListView.separated(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: carts.length,
+                    itemBuilder: (context, index) {
+                      final item = carts[index];
+                      return GestureDetector(
+                        child: Column(
                           children: [
-                            Image.asset(item.image, width: 80, height: 80),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            SizedBox(
+                              height: 120,
+                              child: Row(
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          item.name,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 8),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: FadeInImage(
+                                        placeholder: const AssetImage(
+                                            "assets/images/loading_plaholder.gif"),
+                                        width: 100,
+                                        height: 105,
+                                        image: NetworkImage(
+                                            item.productPathApi.toString()),
+                                        fit: BoxFit.cover,
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                  const SizedBox(height: 6),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'ລາຄາ: ${item.price}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.redAccent,
-                                              width: 2),
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                        ),
-                                        child: SizedBox(
-                                          width: 32,
-                                          height: 32,
-                                          child: IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                size: 16),
-                                            onPressed: () => _deleteItem(index),
-                                            color: Colors.redAccent,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey, width: 2),
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          child: Text(
+                                            item.fullName.toString(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
                                             ),
-                                            child: SizedBox(
-                                              width: 32,
-                                              height: 32,
-                                              child: IconButton(
-                                                icon: const Icon(Icons.remove,
-                                                    size: 16),
-                                                onPressed: () =>
-                                                    _decrementQuantity(index),
-                                                color: Colors.grey,
+                                          ),
+                                        ),
+                                        // Text("Price:50.000"),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                                "${MyData.formatnumber(item.orderListPrice)} x ${item.orderListQty}"),
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 15),
+                                                  child: Text(
+                                                    "${MyData.formatnumber(item.orderListTotal)} ",
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Expanded(child: Container()),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                // providerService
+                                                //     .getdeleteCart(
+                                                //   item.bookUuid.toString(),
+                                                // );
+                                              },
+                                              child: const Icon(
+                                                Icons.delete_outline,
+                                                color: Colors.red,
+                                                size: 30,
                                               ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Text(
-                                              item.quantity.toString(),
-                                              style:
-                                                  const TextStyle(fontSize: 18),
+                                            Row(
+                                              children: [
+                                                IconButton(
+                                                  onPressed: () {
+                                                    // if (item.cartQty == 1) {
+                                                    //   return;
+                                                    // }
+
+                                                    // providerService
+                                                    //     .getupdateCart(
+                                                    //   item.cartBookFk
+                                                    //       .toString(),
+                                                    //   'decrease',
+                                                    // );
+                                                    // providerService
+                                                    //     .getCartList();
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.remove_circle),
+                                                  iconSize: 30,
+                                                  color: Colors.black38,
+                                                ),
+                                                Container(
+                                                  child: Text(
+                                                    '${item.orderListQty}',
+                                                    style: const TextStyle(
+                                                        fontSize: 18),
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    // providerService
+                                                    //     .getupdateCart(
+                                                    //   item.cartBookFk
+                                                    //       .toString(),
+                                                    //   'increase',
+                                                    // );
+                                                    // providerService
+                                                    //     .getCartList();
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.add_circle),
+                                                  iconSize: 30,
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey, width: 2),
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                            ),
-                                            child: SizedBox(
-                                              width: 32,
-                                              height: 32,
-                                              child: IconButton(
-                                                icon: const Icon(Icons.add,
-                                                    size: 16),
-                                                onPressed: () =>
-                                                    _incrementQuantity(index),
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                width: double.infinity, // Set width to 100%
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider();
+                    },
+                  )
+                  // : Center(
+                  //     child: Column(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       crossAxisAlignment: CrossAxisAlignment.center,
+                  //       children: [
+                  //         Container(
+                  //           padding: EdgeInsets.symmetric(vertical: 10),
+                  //           child: const Column(
+                  //             children: [
+                  //               Icon(
+                  //                 Icons.shopping_cart_outlined,
+                  //                 size: 70,
+                  //               ),
+                  //               Text("( ບໍ່ມີລາຍການ )")
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  ),
+            ),
+          ],
+        )),
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.blue,
+        padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
+        height: 110,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: const Text(
+                    "ລວມຍອດ",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 16.0, horizontal: 16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'ລວມທັງໝົດ:',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '${_calculateTotal()}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ],
+                Container(
+                  padding: EdgeInsets.only(right: 15),
+                  child: Text(
+                    // MyData.formatnumber(providerService.cartNetTotal),
+                    '10',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('ສັ່ງຊື້ສິນຄ້າສໍາເລັດ'),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        minimumSize: const Size.fromHeight(40),
-                      ),
-                      child: const Text(
-                        'ສັ່ງຊື້',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(40),
+                    ),
+                    onPressed: () {},
+                    child: const Text(
+                      "ຊໍາລະເງິນ",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 1),
+          ],
         ),
       ),
     );
   }
-}
-
-class CartItem {
-  final String name;
-  final String image;
-  final int price;
-  int quantity;
-
-  CartItem({
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.quantity,
-  });
 }

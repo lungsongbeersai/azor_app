@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:azor/models/cart_models.dart';
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/login_models.dart';
 import 'package:azor/models/product_getid_models.dart';
@@ -183,6 +184,30 @@ class APIService {
 
     if (response.statusCode == 200) {
       return true;
+    } else {
+      throw Exception(
+          'Failed to fetch Product, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<List<CartModels>> cartApi(String tableID, String branchID) async {
+    List<CartModels> cartList = [];
+    final http.Response response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?cart'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'order_list_table_fk': tableID,
+        'order_list_branch_fk': branchID,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      cartList = (json.decode(response.body) as List)
+          .map((e) => CartModels.fromJson(e))
+          .toList();
+      return cartList;
     } else {
       throw Exception(
           'Failed to fetch Product, status code: ${response.statusCode}');

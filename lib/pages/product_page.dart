@@ -304,8 +304,8 @@ class _ProductListState extends State<ProductList> {
                                                   borderRadius:
                                                       BorderRadius.circular(8),
                                                 ),
-                                                child: Text(
-                                                  '10%',
+                                                child: const Text(
+                                                  'ສ່ວນຫຼຸດ',
                                                   style: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 16,
@@ -390,6 +390,7 @@ class _ProductListState extends State<ProductList> {
               Navigator.pushNamed(
                 context,
                 "shopping_cart",
+                arguments: ' ${tableCode.toString()} ',
               );
             },
             child: const Icon(
