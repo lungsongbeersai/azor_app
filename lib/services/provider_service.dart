@@ -19,6 +19,7 @@ class ProviderService extends ChangeNotifier {
   List<ProductGetid> productID = [];
   List<CartModels> cartList = [];
 
+  int cartNetTotal = 0;
   int _quantity = 1;
   String _selectedSize = '';
 
@@ -205,11 +206,21 @@ class ProviderService extends ChangeNotifier {
 
   getCart(String tableID, String branchID) async {
     try {
-      cartList = await APIService().cartApi(tableID, branchID);
+      cartList = await APIService().cartApi(tableID, MyData.branchCode);
       notifyListeners();
     } catch (e) {
       print('Error fetching Cart: $e');
     }
+  }
+
+  getCartList(String tableID) async {
+    cartList = await APIService().cartApi(tableID, MyData.branchCode);
+    cartNetTotal = 0;
+    for (int i = 0; i < cartList.length; i++) {
+      final item = cartList[i];
+      cartNetTotal += int.parse(item.orderListTotal.toString());
+    }
+    notifyListeners();
   }
 
   getPullRefresh() {

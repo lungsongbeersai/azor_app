@@ -9,8 +9,13 @@ class MyData {
   static String statusName = '';
 
   static String formatnumber(dynamic numbers) {
+    // final formatter = NumberFormat('#,###');
+    // return formatter.format(numbers);
+
+    // Convert input to a number
+    final number = double.tryParse(numbers.toString()) ?? 0;
     final formatter = NumberFormat('#,###');
-    return formatter.format(numbers);
+    return formatter.format(number);
   }
 
   static String formatDate(DateTime date) {
