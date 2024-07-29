@@ -248,7 +248,7 @@ class APIService {
       },
       body: jsonEncode(<String, String>{
         "order_list_code": orderlistcode.toString(),
-        "table_code": orderlistcode.toString(),
+        "table_code": table.toString(),
       }),
     );
 
