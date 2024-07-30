@@ -25,8 +25,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
         tableID = args[0];
         final providerService =
             Provider.of<ProviderService>(context, listen: false);
-        providerService.getCart(tableID, MyData.branchCode);
-        providerService.getCartList(tableID);
+        providerService.getCart(tableID.toString(), MyData.branchCode);
+        providerService.getCartList(tableID.toString());
       }
     }
   }

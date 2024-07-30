@@ -245,8 +245,8 @@ class ProviderService extends ChangeNotifier {
         .deleteCart(orderlistcode.toString(), table.toString());
     if (isSuccess == true) {
       EasyLoading.dismiss();
-      getCartList(table);
       resetQuantity();
+      getCartList(table);
       getTable();
       notifyListeners();
       return true;

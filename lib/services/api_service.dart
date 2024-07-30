@@ -252,6 +252,9 @@ class APIService {
       }),
     );
 
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
     if (response.statusCode == 200) {
       return true;
     } else {
