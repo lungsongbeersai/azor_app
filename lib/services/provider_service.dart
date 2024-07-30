@@ -257,10 +257,11 @@ class ProviderService extends ChangeNotifier {
   }
 
   getPullRefresh() {
-    getZone();
     selectedIndex = 0;
+    getZone();
     getTable();
     getCategory(selectedIndex);
     getProduct("", "", 1);
+    notifyListeners();
   }
 }
