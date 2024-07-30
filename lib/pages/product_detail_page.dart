@@ -364,9 +364,18 @@ class _ProductDetailState extends State<ProductDetail> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
-        title: Text(
-          discountValue > 0 ? '$size ($discount%)' : size,
-          style: const TextStyle(fontSize: 20),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              discountValue > 0 ? '$size ($discount%)' : size,
+              style: const TextStyle(fontSize: 20),
+            ),
+            Text(
+              "ຄົງເຫຼືອ:10",
+              style: const TextStyle(fontSize: 14),
+            ),
+          ],
         ),
         subtitle: discountValue > 0
             ? Column(
