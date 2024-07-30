@@ -247,8 +247,8 @@ class APIService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        "order_list_code": orderlistcode.toString(),
-        "table_code": table.toString(),
+        "order_list_code": orderlistcode,
+        "table_code": table,
       }),
     );
 

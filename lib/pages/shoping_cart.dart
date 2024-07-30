@@ -184,7 +184,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                               .deleteCart(
                                                             item.orderListCode
                                                                 .toString(),
-                                                            tableID.toString(),
+                                                            tableID,
                                                           );
                                                         },
                                                         color: Colors.redAccent,
