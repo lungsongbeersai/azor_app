@@ -133,19 +133,25 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                           FontWeight.w500,
                                                       color: Colors.black45,
                                                     ),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                   Container(
                                                     padding:
                                                         const EdgeInsets.only(
-                                                            right: 15),
+                                                            right: 1),
                                                     child: Text(
                                                       "${MyData.formatnumber(item.orderListTotal.toString())}₭",
                                                       style: const TextStyle(
-                                                        fontSize: 18,
+                                                        fontSize: 17,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         color: Colors.black87,
                                                       ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                   ),
                                                 ],

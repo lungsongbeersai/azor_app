@@ -241,7 +241,8 @@ class ProviderService extends ChangeNotifier {
   }
 
   Future<bool> deleteCart(String orderlistcode, String table) async {
-    final isSuccess = await APIService().deleteCart(orderlistcode, table);
+    final isSuccess = await APIService()
+        .deleteCart(orderlistcode.toString(), table.toString());
     if (isSuccess == true) {
       EasyLoading.dismiss();
       getCartList(table);
