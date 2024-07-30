@@ -181,8 +181,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                           size: 16,
                                                         ),
                                                         onPressed: () {
-                                                          print(
-                                                              "resutl: ${item.orderListCode} / ${tableID.toString()}");
                                                           providerService
                                                               .getDeleteCart(
                                                             item.orderListCode
