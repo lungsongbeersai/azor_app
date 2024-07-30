@@ -24,13 +24,14 @@ class _ProductListState extends State<ProductList> {
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
     providerService.getCategory(0);
-
     providerService.getProduct('0', '', 0);
 
     Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
 
     _scrollController.addListener(() {
@@ -80,24 +81,20 @@ class _ProductListState extends State<ProductList> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),
-        leading: SizedBox(
-          height: 100,
-          width: 100,
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: ClipOval(
-              child: Container(
-                color: Colors.white.withOpacity(0.1),
-                child:
-                    const Icon(Icons.arrow_back, color: Colors.white, size: 24),
-              ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: ClipOval(
+            child: Container(
+              color: Colors.white.withOpacity(0.1),
+              child:
+                  const Icon(Icons.arrow_back, color: Colors.white, size: 24),
             ),
           ),
         ),
         title: Text(
-          "ເບີໂຕະ ${tableName.toString()}",
+          "ເບີໂຕະ $tableName",
           style: const TextStyle(
             color: Colors.white,
             fontSize: 30,
@@ -164,7 +161,7 @@ class _ProductListState extends State<ProductList> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               SvgPicture.network(
-                                '${item.cateIcon}',
+                                item.cateIcon.toString(),
                                 colorFilter: ColorFilter.mode(
                                   providerService.selectedIndex != index
                                       ? Colors.black
@@ -306,7 +303,7 @@ class _ProductListState extends State<ProductList> {
                                                 ),
                                                 child: const Text(
                                                   'ສ່ວນຫຼຸດ',
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
@@ -340,7 +337,6 @@ class _ProductListState extends State<ProductList> {
                                   ),
                                 ),
                               );
-                              ;
                             },
                           );
                         },
@@ -409,7 +405,9 @@ class _ProductListState extends State<ProductList> {
                   duration: const Duration(milliseconds: 300),
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: 10 > 0 ? Colors.red : Colors.grey,
+                    color: providerService.cartList.length > 0
+                        ? Colors.red
+                        : Colors.grey,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
