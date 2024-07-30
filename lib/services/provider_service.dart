@@ -240,8 +240,9 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteCart(String orderlistcode, String table) async {
-    final isSuccess = await APIService().deleteCart(orderlistcode, table);
+  Future<bool> getDeleteCart(String orderlistcode, String table) async {
+    final isSuccess = await APIService()
+        .deleteCart(orderlistcode.toString(), table.toString());
     if (isSuccess == true) {
       EasyLoading.dismiss();
       getCartList(table);
@@ -256,10 +257,9 @@ class ProviderService extends ChangeNotifier {
   }
 
   getPullRefresh() {
-    selectedIndex = 0;
     getZone();
     getTable();
-    getCategory(selectedIndex);
+    getCategory(0);
     getProduct("", "", 1);
     notifyListeners();
   }

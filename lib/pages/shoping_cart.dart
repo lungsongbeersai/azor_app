@@ -177,14 +177,17 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                       height: 32,
                                                       child: IconButton(
                                                         icon: const Icon(
-                                                            Icons.delete,
-                                                            size: 16),
+                                                          Icons.delete,
+                                                          size: 16,
+                                                        ),
                                                         onPressed: () {
+                                                          print(
+                                                              "resutl: ${item.orderListCode} / ${tableID.toString()}");
                                                           providerService
-                                                              .deleteCart(
+                                                              .getDeleteCart(
                                                             item.orderListCode
                                                                 .toString(),
-                                                            tableID,
+                                                            tableID.toString(),
                                                           );
                                                         },
                                                         color: Colors.redAccent,
@@ -209,8 +212,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage>
                                                           height: 32,
                                                           child: IconButton(
                                                             icon: const Icon(
-                                                                Icons.remove,
-                                                                size: 16),
+                                                              Icons.remove,
+                                                              size: 16,
+                                                            ),
                                                             onPressed: () {
                                                               if (item.orderListQty ==
                                                                   1) {
