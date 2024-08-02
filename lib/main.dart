@@ -1,10 +1,10 @@
 import 'package:azor/pages/bar_page.dart';
+import 'package:azor/pages/cart.dart';
 import 'package:azor/pages/cook_page.dart';
 import 'package:azor/pages/login_page.dart';
 import 'package:azor/pages/product_detail_page.dart';
 import 'package:azor/pages/product_page.dart';
 import 'package:azor/pages/search_page.dart';
-import 'package:azor/pages/shoping_cart.dart';
 import 'package:azor/pages/tab_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           "table_id": (_) => const ProductList(),
           "search": (_) => const SearchPage(),
           "product_detail": (_) => const ProductDetail(),
-          "shopping_cart": (_) => const ShoppingCartPage(),
+          "shopping_cart": (_) => const CartPage(),
         },
       ),
     );

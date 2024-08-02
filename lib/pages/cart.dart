@@ -3,14 +3,14 @@ import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ShoppingCartPage extends StatefulWidget {
-  const ShoppingCartPage({super.key});
+class CartPage extends StatefulWidget {
+  const CartPage({super.key});
 
   @override
-  State<ShoppingCartPage> createState() => _ShoppingCartPageState();
+  State<CartPage> createState() => _CartPageState();
 }
 
-class _ShoppingCartPageState extends State<ShoppingCartPage>
+class _CartPageState extends State<CartPage>
     with SingleTickerProviderStateMixin {
   double bottomSize = 20;
   String tableID = "";
