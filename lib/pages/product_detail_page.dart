@@ -277,9 +277,6 @@ class _ProductDetailState extends State<ProductDetail> {
                                       showCloseIcon: true,
                                       title: 'ແຈ້ງເຕືອນ',
                                       desc: 'ເພີ່ມເຂົ້າກະຕ໋າສໍາເລັດແລ້ວ',
-                                      btnOkOnPress: () {
-                                        debugPrint('OnClcik');
-                                      },
                                       btnOkText: 'ປິດ',
                                       btnOkIcon: Icons.check_circle,
                                     ).show();
@@ -291,7 +288,6 @@ class _ProductDetailState extends State<ProductDetail> {
                                       headerAnimationLoop: true,
                                       title: 'ແຈ້ງເຕືອນ',
                                       desc: 'ເພີ່ມຂໍໍໍມູນຫຼົ້ມເຫຼວ',
-                                      btnOkOnPress: () {},
                                       btnOkIcon: Icons.cancel,
                                       btnOkColor: Colors.red,
                                       btnOkText: 'ປິດ',
@@ -313,15 +309,18 @@ class _ProductDetailState extends State<ProductDetail> {
                                   ).show();
                                 },
                           style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
-                            padding:
-                                MaterialStateProperty.all<EdgeInsetsGeometry>(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 40, vertical: 16),
+                            backgroundColor: WidgetStateProperty.all<Color>(
+                              Colors.blue,
                             ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
+                            padding:
+                                WidgetStateProperty.all<EdgeInsetsGeometry>(
+                              const EdgeInsets.symmetric(
+                                horizontal: 40,
+                                vertical: 16,
+                              ),
+                            ),
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),

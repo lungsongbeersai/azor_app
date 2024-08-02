@@ -2,6 +2,8 @@ import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -14,6 +16,7 @@ class _CartPageState extends State<CartPage>
     with SingleTickerProviderStateMixin {
   double bottomSize = 20;
   String tableID = "";
+  bool isLoading = false;
 
   @override
   void didChangeDependencies() {
@@ -31,10 +34,50 @@ class _CartPageState extends State<CartPage>
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  Future<void> updateCart(List<String> orderListCodes) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    var url = Uri.parse('http://api-azor.plc.la/update_cart');
+    var headers = {'Content-Type': 'application/json'};
+    var body = jsonEncode({'order_list_code': orderListCodes});
+
+    try {
+      var response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == 'success') {
+          // Handle success
+          print('Update success!');
+        } else {
+          // Handle other statuses
+          print('Update failed: ${data['status']}');
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Update failed: ${data['status']}'),
+            backgroundColor: Colors.red,
+          ));
+        }
+      } else {
+        // Handle other HTTP status codes
+        print('Request failed with status: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Request failed with status: ${response.statusCode}'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } catch (error) {
+      // Handle network or server errors
+      print('Error updating cart: $error');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error updating cart: $error'),
+        backgroundColor: Colors.red,
+      ));
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -53,275 +96,312 @@ class _CartPageState extends State<CartPage>
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: SingleChildScrollView(
-              child: Column(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height -
-                    kToolbarHeight -
-                    MediaQuery.of(context).padding.top -
-                    kBottomNavigationBarHeight -
-                    bottomSize,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 5),
-                  child: carts.isNotEmpty
-                      ? ListView.separated(
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          itemCount: carts.length,
-                          itemBuilder: (context, index) {
-                            final item = carts[index];
-                            return GestureDetector(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 100,
-                                    child: Row(
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height -
+                          kToolbarHeight -
+                          MediaQuery.of(context).padding.top -
+                          kBottomNavigationBarHeight -
+                          bottomSize,
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 5),
+                        child: carts.isNotEmpty
+                            ? ListView.separated(
+                                shrinkWrap: true,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemCount: carts.length,
+                                itemBuilder: (context, index) {
+                                  final item = carts[index];
+                                  return GestureDetector(
+                                    child: Column(
                                       children: [
-                                        Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 8),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: FadeInImage(
-                                              placeholder: const AssetImage(
-                                                "assets/images/loading_plaholder.gif",
-                                              ),
-                                              width: 100,
-                                              height: 105,
-                                              image: NetworkImage(
-                                                item.productPathApi.toString(),
-                                              ),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                        SizedBox(
+                                          height: 100,
+                                          child: Row(
                                             children: [
                                               Container(
-                                                child: Text(
-                                                  item.fullName.toString(),
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
+                                                margin: const EdgeInsets.only(
+                                                    right: 8),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  child: FadeInImage(
+                                                    placeholder:
+                                                        const AssetImage(
+                                                      "assets/images/loading_placeholder.gif",
+                                                    ),
+                                                    width: 100,
+                                                    height: 105,
+                                                    image: NetworkImage(
+                                                      item.productPathApi
+                                                          .toString(),
+                                                    ),
+                                                    fit: BoxFit.cover,
                                                   ),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "${MyData.formatnumber(item.orderListPrice.toString())} x ${item.orderListQty}",
-                                                    style: const TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Colors.black45,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 1),
-                                                    child: Text(
-                                                      "${MyData.formatnumber(item.orderListTotal.toString())}₭",
-                                                      style: const TextStyle(
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black87,
-                                                      ),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Expanded(child: Container()),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color:
-                                                              Colors.redAccent,
-                                                          width: 2),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                    ),
-                                                    child: SizedBox(
-                                                      width: 32,
-                                                      height: 32,
-                                                      child: IconButton(
-                                                        icon: const Icon(
-                                                          Icons.delete,
-                                                          size: 16,
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      child: Text(
+                                                        item.fullName
+                                                            .toString(),
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
                                                         ),
-                                                        onPressed: () {
-                                                          providerService
-                                                              .getDeleteCart(
-                                                            item.orderListCode
-                                                                .toString(),
-                                                            tableID.toString(),
-                                                          );
-                                                        },
-                                                        color: Colors.redAccent,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
                                                     ),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border.all(
-                                                              color:
-                                                                  Colors.grey,
-                                                              width: 2),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(4),
-                                                        ),
-                                                        child: SizedBox(
-                                                          width: 32,
-                                                          height: 32,
-                                                          child: IconButton(
-                                                            icon: const Icon(
-                                                              Icons.remove,
-                                                              size: 16,
-                                                            ),
-                                                            onPressed: () {
-                                                              if (item.orderListQty ==
-                                                                  1) {
-                                                                return;
-                                                              }
-                                                              providerService
-                                                                  .getupdateCart(
-                                                                item.orderListCode
-                                                                    .toString(),
-                                                                item.orderListPercented ??
-                                                                    0,
-                                                                'decrease',
-                                                                tableID,
-                                                              );
-                                                            },
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                    8.0),
-                                                        child: Text(
-                                                          item.orderListQty
-                                                              .toString(),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "${MyData.formatnumber(item.orderListPrice.toString())} x ${item.orderListQty}",
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 18),
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color:
+                                                                Colors.black45,
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         ),
-                                                      ),
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border.all(
-                                                              color:
-                                                                  Colors.grey,
-                                                              width: 2),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(4),
-                                                        ),
-                                                        child: SizedBox(
-                                                          width: 32,
-                                                          height: 32,
-                                                          child: IconButton(
-                                                            icon: const Icon(
-                                                                Icons.add,
-                                                                size: 16),
-                                                            onPressed: () {
-                                                              providerService
-                                                                  .getupdateCart(
-                                                                item.orderListCode
-                                                                    .toString(),
-                                                                item.orderListPercented ??
-                                                                    0,
-                                                                'increase',
-                                                                tableID,
-                                                              );
-                                                            },
-                                                            color: Colors.grey,
+                                                        Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  right: 1),
+                                                          child: Text(
+                                                            "${MyData.formatnumber(item.orderListTotal.toString())}₭",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 17,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Colors
+                                                                  .black87,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
                                                         ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
+                                                      ],
+                                                    ),
+                                                    Expanded(
+                                                        child: Container()),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            border: Border.all(
+                                                                color: Colors
+                                                                    .redAccent,
+                                                                width: 2),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4),
+                                                          ),
+                                                          child: SizedBox(
+                                                            width: 32,
+                                                            height: 32,
+                                                            child: IconButton(
+                                                              icon: const Icon(
+                                                                  Icons.delete,
+                                                                  size: 16),
+                                                              onPressed: () {
+                                                                providerService
+                                                                    .getDeleteCart(
+                                                                  item.orderListCode
+                                                                      .toString(),
+                                                                  tableID
+                                                                      .toString(),
+                                                                );
+                                                              },
+                                                              color: Colors
+                                                                  .redAccent,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    width: 2),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            4),
+                                                              ),
+                                                              child: SizedBox(
+                                                                width: 32,
+                                                                height: 32,
+                                                                child:
+                                                                    IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .remove,
+                                                                      size: 16),
+                                                                  onPressed:
+                                                                      () {
+                                                                    if (item.orderListQty ==
+                                                                        1) {
+                                                                      return;
+                                                                    }
+                                                                    providerService
+                                                                        .getupdateCart(
+                                                                      item.orderListCode
+                                                                          .toString(),
+                                                                      item.orderListPercented ??
+                                                                          0,
+                                                                      'decrease',
+                                                                      tableID,
+                                                                    );
+                                                                  },
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          8.0),
+                                                              child: Text(
+                                                                item.orderListQty
+                                                                    .toString(),
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            18),
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    width: 2),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            4),
+                                                              ),
+                                                              child: SizedBox(
+                                                                width: 32,
+                                                                height: 32,
+                                                                child:
+                                                                    IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons.add,
+                                                                      size: 16),
+                                                                  onPressed:
+                                                                      () {
+                                                                    providerService
+                                                                        .getupdateCart(
+                                                                      item.orderListCode
+                                                                          .toString(),
+                                                                      item.orderListPercented ??
+                                                                          0,
+                                                                      'increase',
+                                                                      tableID,
+                                                                    );
+                                                                  },
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider();
-                          },
-                        )
-                      : Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                child: const Column(
+                                  );
+                                },
+                                separatorBuilder: (context, index) {
+                                  return Divider();
+                                },
+                              )
+                            : Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Icon(
-                                      Icons.shopping_cart_outlined,
-                                      size: 70,
+                                    Container(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: const Column(
+                                        children: [
+                                          Icon(
+                                            Icons.shopping_cart_outlined,
+                                            size: 70,
+                                          ),
+                                          Text("( ບໍ່ມີລາຍການ )")
+                                        ],
+                                      ),
                                     ),
-                                    Text("( ບໍ່ມີລາຍການ )")
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          )),
-        ),
+            ),
+          ),
+          if (isLoading)
+            Container(
+              color: Colors.black45,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -379,7 +459,12 @@ class _CartPageState extends State<CartPage>
                     ),
                     minimumSize: const Size.fromHeight(40),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    final orderListCodes = providerService.cartList
+                        .map((item) => item.orderListCode.toString())
+                        .toList();
+                    updateCart(orderListCodes);
+                  },
                   child: const Text(
                     "ຢືນຢັນອໍເດີ",
                     style: TextStyle(

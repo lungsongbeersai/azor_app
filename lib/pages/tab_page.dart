@@ -31,7 +31,7 @@ class _TapPageState extends State<TapPage> {
               children: const [
                 NotificationPage(),
                 HomePage(),
-                CartPage(),
+                NotificationPage(),
               ],
               onPageChanged: (value) {
                 providerService.pageselected = value;
