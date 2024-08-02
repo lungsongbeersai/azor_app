@@ -1,5 +1,5 @@
 import 'package:azor/pages/bar_page.dart';
-import 'package:azor/pages/cart.dart';
+import 'package:azor/pages/cart_page.dart';
 import 'package:azor/pages/cook_page.dart';
 import 'package:azor/pages/login_page.dart';
 import 'package:azor/pages/product_detail_page.dart';
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           "table_id": (_) => const ProductList(),
           "search": (_) => const SearchPage(),
           "product_detail": (_) => const ProductDetail(),
-          "shopping_cart": (_) => const CartPage(),
+          "cart": (_) => const CartPage(),
         },
       ),
     );

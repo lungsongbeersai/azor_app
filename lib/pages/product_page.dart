@@ -388,7 +388,7 @@ class _ProductListState extends State<ProductList> {
                 onPressed: () async {
                   Navigator.pushNamed(
                     context,
-                    "shopping_cart",
+                    "cart",
                     arguments: ' ${tableCode.toString()} ',
                   );
                 },
