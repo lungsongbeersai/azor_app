@@ -1,4 +1,3 @@
-import 'package:azor/pages/cart_page.dart';
 import 'package:azor/pages/home_page.dart';
 import 'package:azor/pages/notifications_page.dart';
 import 'package:azor/services/provider_service.dart';
