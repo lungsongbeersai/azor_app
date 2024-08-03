@@ -362,29 +362,18 @@ class _CartPageState extends State<CartPage>
                                     ),
                                   );
                                 },
-                                separatorBuilder: (context, index) {
-                                  return Divider();
-                                },
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
+                                  thickness: 0.5,
+                                  color: Colors.grey,
+                                ),
                               )
-                            : Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 10),
-                                      child: const Column(
-                                        children: [
-                                          Icon(
-                                            Icons.shopping_cart_outlined,
-                                            size: 70,
-                                          ),
-                                          Text("( ບໍ່ມີລາຍການ )")
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                            : const Center(
+                                child: Text(
+                                  "ບໍ່ມີລາຍການ",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                       ),
@@ -394,90 +383,81 @@ class _CartPageState extends State<CartPage>
               ),
             ),
           ),
-          if (isLoading)
-            Container(
-              color: Colors.black45,
-              child: Center(
-                child: CircularProgressIndicator(),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 1,
+                    color: Colors.grey[300],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "ລວມທັງໝົດ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            MyData.formatnumber(providerService.cartNetTotal),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black45,
+                            ),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (isLoading) {
+                            return;
+                          }
+
+                          List<String> orderListCodes = providerService.cartList
+                              .map((item) => item.orderListCode.toString())
+                              .toList();
+
+                          await updateCart(orderListCodes);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 24,
+                          ),
+                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              )
+                            : const Text(
+                                "ສັ່ງຊື້",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        height: 120,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 5,
-              offset: Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "ລວມຍອດ",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: Text(
-                    '${MyData.formatnumber(providerService.cartNetTotal)}₭ ',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    minimumSize: const Size.fromHeight(40),
-                  ),
-                  onPressed: () {
-                    final orderListCodes = providerService.cartList
-                        .map((item) => item.orderListCode.toString())
-                        .toList();
-                    updateCart(orderListCodes);
-                  },
-                  child: const Text(
-                    "ຢືນຢັນອໍເດີ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 1),
-          ],
-        ),
+        ],
       ),
     );
   }
