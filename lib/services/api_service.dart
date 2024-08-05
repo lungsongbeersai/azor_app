@@ -21,7 +21,6 @@ class APIService {
               'users_name': email,
               'users_password': password,
             }));
-
     if (response.statusCode == 200) {
       return LoginInfo.fromJson(jsonDecode(response.body));
     } else {
@@ -258,4 +257,50 @@ class APIService {
       throw Exception('Failed to update qty: ${response.statusCode}');
     }
   }
+
+  Future<bool> confirmOrder(List<String> orderListCodes) async {
+    final url = Uri.parse('http://api-azor.plc.la/update_cart');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'order_list_codes': orderListCodes,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Success: ${response.body}');
+        return true; // Indicate success
+      } else {
+        print('Failed: ${response.statusCode} ${response.body}');
+        return false; // Indicate failure
+      }
+    } catch (error) {
+      print('Error: $error');
+      return false; // Indicate failure
+    }
+  }
+
+  // Future<void> confirmOrder(List<String> orderListCodes) async {
+  //   final url = Uri.parse('http://api-azor.plc.la/update_cart');
+  //   final response = await http.post(
+  //     url,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: json.encode({
+  //       'order_list_codes': orderListCodes,
+  //     }),
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     print('Success: ${response.body}');
+  //   } else {
+  //     print('Failed: ${response.statusCode} ${response.body}');
+  //   }
+  // }
 }

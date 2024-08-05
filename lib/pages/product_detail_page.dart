@@ -272,7 +272,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                     AwesomeDialog(
                                       context: context,
                                       animType: AnimType.leftSlide,
-                                      headerAnimationLoop: false,
+                                      headerAnimationLoop: true,
                                       dialogType: DialogType.success,
                                       showCloseIcon: true,
                                       title: 'ແຈ້ງເຕືອນ',

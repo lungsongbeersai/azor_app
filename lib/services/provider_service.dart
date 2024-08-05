@@ -256,6 +256,21 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  Future<bool> getConfirm(List<String> orderListCodes) async {
+    EasyLoading.show(status: 'ກໍາລັງໂຫຼດ...');
+
+    final isSuccess = await APIService().confirmOrder(orderListCodes);
+
+    if (isSuccess) {
+      notifyListeners();
+      EasyLoading.dismiss();
+      return true;
+    } else {
+      EasyLoading.dismiss();
+      return false;
+    }
+  }
+
   getPullRefresh() {
     getZone();
     getTable();
