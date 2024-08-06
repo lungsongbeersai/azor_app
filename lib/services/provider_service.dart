@@ -26,19 +26,32 @@ class ProviderService extends ChangeNotifier {
   int get quantity => _quantity;
   String get selectedSize => _selectedSize;
 
+  String massageMsg = "";
+
   int selectedIndex = 0;
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
 
-  String massageMsg = "";
-
   final PageController _pageController = PageController(initialPage: 1);
   PageController get pageController => _pageController;
+
+  int _pageSelectedIndex = 0;
+  int get pageSelected => _pageSelectedIndex;
+
+  PageController _pagecontroller = PageController(initialPage: 0);
+  PageController get pagecontroller => _pagecontroller;
 
   set pageselected(int index) {
     _pageController.animateToPage(index,
         duration: const Duration(milliseconds: 5), curve: Curves.ease);
     _pageselectedIndex = index;
+    notifyListeners();
+  }
+
+  set pageSelected(int index) {
+    _pageSelectedIndex = index;
+    _pagecontroller.animateToPage(index,
+        duration: const Duration(milliseconds: 5), curve: Curves.bounceIn);
     notifyListeners();
   }
 

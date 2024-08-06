@@ -205,6 +205,7 @@ class APIService {
     );
 
     if (response.statusCode == 200) {
+      print("result: ${response.body}");
       cartList = (json.decode(response.body) as List)
           .map((e) => CartModels.fromJson(e))
           .toList();
