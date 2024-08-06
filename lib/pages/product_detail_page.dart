@@ -144,6 +144,8 @@ class _ProductDetailState extends State<ProductDetail> {
                                       detail.proDetailCode.toString(),
                                       detail.sPrice.toString(),
                                       detail.proDetailGift.toString(),
+                                      detail.productCutStock.toString(),
+                                      detail.proDetailQty.toString(),
                                       providerService.selectedSize,
                                       (newSize) {
                                         providerService
@@ -348,6 +350,8 @@ class _ProductDetailState extends State<ProductDetail> {
     String sizeValue,
     String price,
     String discount,
+    String cutStock,
+    String qty,
     String selectedSize,
     Function(String) onSizeChanged,
   ) {
@@ -355,12 +359,15 @@ class _ProductDetailState extends State<ProductDetail> {
     double discountValue = double.tryParse(discount) ?? 0;
     double discountedPrice =
         originalPrice - (originalPrice * (discountValue / 100));
+    int quantity = int.tryParse(qty) ?? 0;
+    bool isOutOfStock = cutStock == "on" && quantity <= 0;
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8),
+        color: isOutOfStock ? Colors.red[100] : Colors.white,
       ),
       child: ListTile(
         title: Row(
@@ -371,7 +378,7 @@ class _ProductDetailState extends State<ProductDetail> {
               style: const TextStyle(fontSize: 20),
             ),
             Text(
-              "ຄົງເຫຼືອ:10",
+              isOutOfStock ? 'ໝົດແລ້ວ: $quantity' : "ຄົງເຫຼືອ: $quantity",
               style: const TextStyle(fontSize: 14),
             ),
           ],
@@ -401,23 +408,29 @@ class _ProductDetailState extends State<ProductDetail> {
                 '${MyData.formatnumber(originalPrice)}₭',
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
-        leading: Transform.scale(
-          scale: 1.8,
-          child: Radio<String>(
-            value: sizeValue,
-            groupValue: selectedSize,
-            onChanged: (String? newSize) {
-              if (newSize != null) {
-                onSizeChanged(newSize);
-              }
-            },
-          ),
-        ),
+        leading: isOutOfStock
+            ? const SizedBox.shrink()
+            : Transform.scale(
+                scale:
+                    1.8, // Increase this value to make the radio button bigger
+                child: Radio<String>(
+                  value: sizeValue,
+                  groupValue: selectedSize,
+                  onChanged: (String? newSize) {
+                    if (newSize != null) {
+                      onSizeChanged(newSize);
+                    }
+                  },
+                  activeColor: Colors.blue, // Radio button color
+                ),
+              ),
         selected: selectedSize == sizeValue,
         selectedTileColor: const Color.fromARGB(255, 234, 234, 234),
-        onTap: () {
-          onSizeChanged(sizeValue);
-        },
+        onTap: isOutOfStock
+            ? null
+            : () {
+                onSizeChanged(sizeValue);
+              },
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         dense: true,
         visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
