@@ -189,7 +189,8 @@ class APIService {
     }
   }
 
-  Future<List<CartModels>> cartApi(String tableID, String branchID) async {
+  Future<List<CartModels>> cartApi(
+      String tableID, String branchID, int status) async {
     List<CartModels> cartList = [];
     final response = await http.post(
       Uri.parse('${urlAPI.toString()}/?carts'),
@@ -199,6 +200,7 @@ class APIService {
       body: jsonEncode(<String, String>{
         'order_list_table_fk': tableID,
         'order_list_branch_fk': branchID,
+        'order_list_status_order': status.toString()
       }),
     );
 

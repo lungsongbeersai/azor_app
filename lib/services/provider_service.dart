@@ -205,9 +205,9 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  getCart(String tableID, String branchID) async {
+  getCart(String tableID, String branchID, int status) async {
     try {
-      cartList = await APIService().cartApi(tableID, MyData.branchCode);
+      cartList = await APIService().cartApi(tableID, MyData.branchCode, status);
       notifyListeners();
     } catch (e) {
       print('Error fetching Cart: $e');
@@ -215,7 +215,7 @@ class ProviderService extends ChangeNotifier {
   }
 
   getCartList(String tableID) async {
-    cartList = await APIService().cartApi(tableID, MyData.branchCode);
+    cartList = await APIService().cartApi(tableID, MyData.branchCode, 1);
     cartNetTotal = 0;
     for (int i = 0; i < cartList.length; i++) {
       final item = cartList[i];
