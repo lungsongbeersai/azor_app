@@ -835,13 +835,23 @@ class _CartPageState extends State<CartPage>
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Container(
-                                              child: const SizedBox(
-                                                child: Text(
-                                                  "ສະຖານະ",
-                                                  style: TextStyle(
-                                                    fontSize: 20,
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.person,
+                                                    size: 20,
                                                   ),
-                                                ),
+                                                  const SizedBox(width: 8),
+                                                  const Text(
+                                                    'Admin',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                             Row(
