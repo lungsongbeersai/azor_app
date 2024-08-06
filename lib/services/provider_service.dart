@@ -32,11 +32,11 @@ class ProviderService extends ChangeNotifier {
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
 
-  final PageController _pageController = PageController(initialPage: 1);
-  PageController get pageController => _pageController;
-
   int _pageSelectedIndex = 0;
   int get pageSelected => _pageSelectedIndex;
+
+  final PageController _pageController = PageController(initialPage: 1);
+  PageController get pageController => _pageController;
 
   PageController _pagecontroller = PageController(initialPage: 0);
   PageController get pagecontroller => _pagecontroller;

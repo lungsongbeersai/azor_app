@@ -31,57 +31,29 @@ class _TapCartPageState extends State<TapCartPage> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex:
-            Provider.of<ProviderService>(context, listen: false).pageSelected,
-        onTap: (value) {
-          Provider.of<ProviderService>(context, listen: false).pageSelected =
-              value;
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: GestureDetector(
-              onTap: () {
-                // Handle tap action for page 0
-                Provider.of<ProviderService>(context, listen: false)
-                    .pageSelected = 0;
-                Provider.of<ProviderService>(context, listen: false)
-                    .pagecontroller
-                    .jumpToPage(0);
-              },
-              child: const Icon(Icons.filter_1),
+          showSelectedLabels: true,
+          currentIndex:
+              Provider.of<ProviderService>(context, listen: false).pageSelected,
+          onTap: (value) {
+            Provider.of<ProviderService>(context, listen: false).pageSelected =
+                value;
+            Provider.of<ProviderService>(context, listen: false)
+                .getPullRefresh();
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.filter_1),
+              label: 'ກໍາລັງສັ່ງ',
             ),
-            label: 'ກໍາລັງສັ່ງ',
-          ),
-          BottomNavigationBarItem(
-            icon: GestureDetector(
-              onTap: () {
-                // Handle tap action for page 1
-                Provider.of<ProviderService>(context, listen: false)
-                    .pageSelected = 1;
-                Provider.of<ProviderService>(context, listen: false)
-                    .pagecontroller
-                    .jumpToPage(1);
-              },
-              child: const Icon(Icons.filter_2),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.filter_2),
+              label: 'ຢືນຢັນອໍເດີ',
             ),
-            label: 'ຢືນຢັນອໍເດີ',
-          ),
-          BottomNavigationBarItem(
-            icon: GestureDetector(
-              onTap: () {
-                // Handle tap action for page 2
-                Provider.of<ProviderService>(context, listen: false)
-                    .pageSelected = 2;
-                Provider.of<ProviderService>(context, listen: false)
-                    .pagecontroller
-                    .jumpToPage(2);
-              },
-              child: const Icon(Icons.filter_3),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.filter_3),
+              label: 'ສໍາເລັດແລ້ວ',
             ),
-            label: 'ສໍາເລັດແລ້ວ',
-          ),
-        ],
-      ),
+          ]),
     );
   }
 }
