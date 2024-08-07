@@ -218,17 +218,19 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  getCart(String tableID, String branchID, int status) async {
+  getCart(String tableID, String branchID, String status) async {
     try {
-      cartList = await APIService().cartApi(tableID, MyData.branchCode, status);
+      cartList = await APIService()
+          .cartApi(tableID, MyData.branchCode, status.toString());
       notifyListeners();
     } catch (e) {
       print('Error fetching Cart: $e');
     }
   }
 
-  getCartList(String tableID) async {
-    cartList = await APIService().cartApi(tableID, MyData.branchCode, 1);
+  getCartList(String tableID, String status) async {
+    cartList = await APIService()
+        .cartApi(tableID, MyData.branchCode, status.toString());
     cartNetTotal = 0;
     for (int i = 0; i < cartList.length; i++) {
       final item = cartList[i];
@@ -238,12 +240,12 @@ class ProviderService extends ChangeNotifier {
   }
 
   Future<bool> getupdateCart(String orderlistcode, int orderlistpercented,
-      String option, String table) async {
+      String option, String table, String status) async {
     final isSuccess = await APIService()
         .updateCart(orderlistcode, orderlistpercented, option, table);
     if (isSuccess == true) {
       EasyLoading.dismiss();
-      getCartList(table);
+      getCartList(table.toString(), status.toString());
       resetQuantity();
       notifyListeners();
       return true;
@@ -253,13 +255,14 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  Future<bool> getDeleteCart(String orderlistcode, String table) async {
+  Future<bool> getDeleteCart(
+      String orderlistcode, String table, String status) async {
     final isSuccess = await APIService()
         .deleteCart(orderlistcode.toString(), table.toString());
     if (isSuccess == true) {
       EasyLoading.dismiss();
       resetQuantity();
-      getCartList(table);
+      getCartList(table, status);
       getTable();
       notifyListeners();
       return true;

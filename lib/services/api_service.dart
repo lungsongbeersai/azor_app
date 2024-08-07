@@ -190,7 +190,7 @@ class APIService {
   }
 
   Future<List<CartModels>> cartApi(
-      String tableID, String branchID, int status) async {
+      String tableID, String branchID, String status) async {
     List<CartModels> cartList = [];
     final response = await http.post(
       Uri.parse('${urlAPI.toString()}/?carts'),
@@ -200,12 +200,11 @@ class APIService {
       body: jsonEncode(<String, String>{
         'order_list_table_fk': tableID,
         'order_list_branch_fk': branchID,
-        'order_list_status_order': status.toString()
+        'order_list_status_order': status
       }),
     );
 
     if (response.statusCode == 200) {
-      print("result: ${response.body}");
       cartList = (json.decode(response.body) as List)
           .map((e) => CartModels.fromJson(e))
           .toList();

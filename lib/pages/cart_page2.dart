@@ -27,8 +27,8 @@ class _CartPage2State extends State<CartPage2> {
           tableID = args[0];
           final providerService =
               Provider.of<ProviderService>(context, listen: false);
-          providerService.getCart(tableID, MyData.branchCode, 2);
-          providerService.getCartList(tableID);
+          providerService.getCart(tableID, MyData.branchCode, '2');
+          providerService.getCartList(tableID, '2');
           print("result2: ${arguments}");
         }
       }
@@ -38,8 +38,8 @@ class _CartPage2State extends State<CartPage2> {
   Future<void> _refreshCart() async {
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart(tableID, MyData.branchCode, 2);
-    await providerService.getCartList(tableID);
+    await providerService.getCart(tableID, MyData.branchCode, '2');
+    await providerService.getCartList(tableID, '2');
   }
 
   @override
@@ -182,9 +182,10 @@ class _CartPage2State extends State<CartPage2> {
                                                   onPressed: () {
                                                     providerService
                                                         .getDeleteCart(
-                                                      item.orderListCode ?? '',
-                                                      tableID.toString(),
-                                                    );
+                                                            item.orderListCode ??
+                                                                '',
+                                                            tableID.toString(),
+                                                            '1');
                                                   },
                                                   color: Colors.redAccent,
                                                 ),

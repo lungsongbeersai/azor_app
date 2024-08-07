@@ -27,8 +27,8 @@ class _CartPage1State extends State<CartPage1> {
           tableID = args[0];
           final providerService =
               Provider.of<ProviderService>(context, listen: false);
-          providerService.getCart(tableID, MyData.branchCode, 1);
-          providerService.getCartList(tableID);
+          providerService.getCart(tableID, MyData.branchCode, "1");
+          providerService.getCartList(tableID, "1");
           print("result1: ${arguments}");
         }
       }
@@ -38,8 +38,8 @@ class _CartPage1State extends State<CartPage1> {
   Future<void> _refreshCart() async {
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart(tableID, MyData.branchCode, 1);
-    await providerService.getCartList(tableID);
+    await providerService.getCart(tableID, MyData.branchCode, "1");
+    await providerService.getCartList(tableID, "1");
   }
 
   @override
@@ -86,8 +86,8 @@ class _CartPage1State extends State<CartPage1> {
 
                 if (orderListCodes.isNotEmpty) {
                   await providerService.getConfirm(orderListCodes);
-                  providerService.getCart(tableID, MyData.branchCode, 1);
-                  providerService.getCartList(tableID);
+                  providerService.getCart(tableID, MyData.branchCode, "1");
+                  providerService.getCartList(tableID, "1");
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.leftSlide,
@@ -238,9 +238,10 @@ class _CartPage1State extends State<CartPage1> {
                                                   onPressed: () {
                                                     providerService
                                                         .getDeleteCart(
-                                                      item.orderListCode ?? '',
-                                                      tableID.toString(),
-                                                    );
+                                                            item.orderListCode ??
+                                                                '',
+                                                            tableID.toString(),
+                                                            '1');
                                                   },
                                                   color: Colors.redAccent,
                                                 ),
@@ -269,15 +270,14 @@ class _CartPage1State extends State<CartPage1> {
                                                                 null &&
                                                             item.orderListQty! >
                                                                 1) {
-                                                          providerService
-                                                              .getupdateCart(
-                                                            item.orderListCode ??
-                                                                '',
-                                                            item.orderListPercented ??
-                                                                0,
-                                                            'decrease',
-                                                            tableID,
-                                                          );
+                                                          providerService.getupdateCart(
+                                                              item.orderListCode ??
+                                                                  '',
+                                                              item.orderListPercented ??
+                                                                  0,
+                                                              'decrease',
+                                                              tableID,
+                                                              '1');
                                                         }
                                                       },
                                                       color: Colors.grey,
@@ -312,15 +312,14 @@ class _CartPage1State extends State<CartPage1> {
                                                           Icons.add,
                                                           size: 16),
                                                       onPressed: () {
-                                                        providerService
-                                                            .getupdateCart(
-                                                          item.orderListCode ??
-                                                              '',
-                                                          item.orderListPercented ??
-                                                              0,
-                                                          'increase',
-                                                          tableID,
-                                                        );
+                                                        providerService.getupdateCart(
+                                                            item.orderListCode ??
+                                                                '',
+                                                            item.orderListPercented ??
+                                                                0,
+                                                            'increase',
+                                                            tableID,
+                                                            '1');
                                                       },
                                                       color: Colors.grey,
                                                     ),
