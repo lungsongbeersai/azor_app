@@ -66,7 +66,7 @@ class _CartPage2State extends State<CartPage2> {
           padding: const EdgeInsets.all(8.0),
           child: RefreshIndicator(
             onRefresh: _refreshCart,
-            child: _buildTabContent(carts, 1, providerService),
+            child: _buildTabContent(carts, 2, providerService),
           ),
         ),
       ),
@@ -183,7 +183,7 @@ class _CartPage2State extends State<CartPage2> {
                                                             item.orderListCode ??
                                                                 '',
                                                             tableID.toString(),
-                                                            '1');
+                                                            '2');
                                                   },
                                                   color: Colors.redAccent,
                                                 ),

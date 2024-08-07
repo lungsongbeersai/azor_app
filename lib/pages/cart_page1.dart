@@ -224,8 +224,9 @@ class _CartPage1State extends State<CartPage1> {
                                             Container(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
-                                                    color: Colors.redAccent,
-                                                    width: 2),
+                                                  color: Colors.redAccent,
+                                                  width: 2,
+                                                ),
                                                 borderRadius:
                                                     BorderRadius.circular(4),
                                               ),
