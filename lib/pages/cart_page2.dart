@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:azor/models/cart_models.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
@@ -29,7 +28,6 @@ class _CartPage2State extends State<CartPage2> {
               Provider.of<ProviderService>(context, listen: false);
           providerService.getCart(tableID, MyData.branchCode, '2');
           providerService.getCartList(tableID, '2');
-          print("result2: ${arguments}");
         }
       }
     });
@@ -283,61 +281,6 @@ class _CartPage2State extends State<CartPage2> {
                   ),
                 ],
               ),
-              // const SizedBox(height: 15),
-              // ElevatedButton(
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Colors.blue,
-              //     padding:
-              //         const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-              //     shape: const RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.all(
-              //         Radius.circular(10),
-              //       ),
-              //     ),
-              //     minimumSize: const Size.fromHeight(35),
-              //   ),
-              //   onPressed: () async {
-              //     final orderListCodes = providerService.cartList
-              //         .map((item) => item.orderListCode.toString())
-              //         .toList();
-
-              //     if (orderListCodes.isNotEmpty) {
-              //       await providerService.getConfirm(orderListCodes);
-              //       providerService.getCart(tableID, MyData.branchCode, 1);
-              //       providerService.getCartList(tableID);
-              //       AwesomeDialog(
-              //         context: context,
-              //         animType: AnimType.leftSlide,
-              //         headerAnimationLoop: true,
-              //         dialogType: DialogType.success,
-              //         showCloseIcon: true,
-              //         title: 'ແຈ້ງເຕືອນ',
-              //         desc: 'ຢືນຢັນອໍເດີສໍາເລັດແລ້ວ',
-              //         btnOkText: 'ປິດ',
-              //         btnOkIcon: Icons.check_circle,
-              //       ).show();
-              //     } else {
-              //       AwesomeDialog(
-              //         context: context,
-              //         dialogType: DialogType.error,
-              //         animType: AnimType.rightSlide,
-              //         headerAnimationLoop: true,
-              //         title: 'ແຈ້ງເຕືອນ',
-              //         desc: 'ກະຕ໋າຂອງທ່ານ ຍັງບໍ່ມີຂໍໍມູນ',
-              //         btnOkIcon: Icons.cancel,
-              //         btnOkColor: Colors.red,
-              //         btnOkText: 'ປິດ',
-              //       ).show();
-              //     }
-              //   },
-              //   child: const Text(
-              //     "ຢືນຢັນອໍເດີ",
-              //     style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 16,
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
