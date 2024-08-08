@@ -9,6 +9,7 @@ class CartModels {
   int? orderListPercented;
   String? orderListTotal;
   String? usersName;
+  String? orderListStatusCook;
 
   CartModels(
       {this.orderListCode,
@@ -20,7 +21,8 @@ class CartModels {
       this.orderListAmount,
       this.orderListPercented,
       this.orderListTotal,
-      this.usersName});
+      this.usersName,
+      this.orderListStatusCook});
 
   CartModels.fromJson(Map<String, dynamic> json) {
     orderListCode = json['order_list_code'];
@@ -33,6 +35,7 @@ class CartModels {
     orderListPercented = json['order_list_percented'];
     orderListTotal = json['order_list_total'];
     usersName = json['users_name'];
+    orderListStatusCook = json['order_list_status_cook'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +50,7 @@ class CartModels {
     data['order_list_percented'] = this.orderListPercented;
     data['order_list_total'] = this.orderListTotal;
     data['users_name'] = this.usersName;
+    data['order_list_status_cook'] = this.orderListStatusCook;
     return data;
   }
 }

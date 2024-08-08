@@ -107,7 +107,9 @@ class _CartPage1State extends State<CartPage1> {
                   // socket?.emit('order', {'orderListCodes': orderListCodes});
                   socket?.emit('order', {
                     'orderListCodes': orderListCodes,
-                    'status': orderListCodes
+                    'status': providerService.cartList
+                        .map((item) => item.orderListStatusCook)
+                        .toList(),
                   });
 
                   AwesomeDialog(
