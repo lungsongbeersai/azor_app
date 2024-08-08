@@ -4,6 +4,7 @@ import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class CartPage1 extends StatefulWidget {
   const CartPage1({super.key});
@@ -13,12 +14,26 @@ class CartPage1 extends StatefulWidget {
 }
 
 class _CartPage1State extends State<CartPage1> {
+  IO.Socket? socket;
   double bottomSize = 120;
   String tableID = "";
-
   @override
   void initState() {
     super.initState();
+    socket = IO.io('http://api-azor.plc.la:8091', <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+    socket?.connect();
+
+    socket?.onConnect((_) {
+      print('connected');
+    });
+
+    socket?.onDisconnect((_) {
+      print('disconnected');
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final arguments = ModalRoute.of(context)?.settings.arguments as String?;
       if (arguments != null) {
@@ -29,17 +44,15 @@ class _CartPage1State extends State<CartPage1> {
               Provider.of<ProviderService>(context, listen: false);
           providerService.getCart(tableID, MyData.branchCode, "1");
           providerService.getCartList(tableID, "1");
-          print("result1: ${arguments}");
         }
       }
     });
   }
 
-  Future<void> _refreshCart() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart(tableID, MyData.branchCode, "1");
-    await providerService.getCartList(tableID, "1");
+  @override
+  void dispose() {
+    socket?.disconnect();
+    super.dispose();
   }
 
   @override
@@ -79,6 +92,7 @@ class _CartPage1State extends State<CartPage1> {
             child: IconButton(
               icon: const Icon(Icons.print),
               iconSize: 30,
+              // ที่คุณกดปุ่มเพื่อส่งออร์เดอร์
               onPressed: () async {
                 final orderListCodes = providerService.cartList
                     .map((item) => item.orderListCode.toString())
@@ -88,6 +102,14 @@ class _CartPage1State extends State<CartPage1> {
                   await providerService.getConfirm(orderListCodes);
                   providerService.getCart(tableID, MyData.branchCode, "1");
                   providerService.getCartList(tableID, "1");
+
+                  // Emit socket event
+                  // socket?.emit('order', {'orderListCodes': orderListCodes});
+                  socket?.emit('order', {
+                    'orderListCodes': orderListCodes,
+                    'status': orderListCodes
+                  });
+
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.leftSlide,
@@ -113,6 +135,7 @@ class _CartPage1State extends State<CartPage1> {
                   ).show();
                 }
               },
+
               color: Colors.blue, // Icon color
             ),
           ),
@@ -129,6 +152,13 @@ class _CartPage1State extends State<CartPage1> {
         ),
       ),
     );
+  }
+
+  Future<void> _refreshCart() async {
+    final providerService =
+        Provider.of<ProviderService>(context, listen: false);
+    await providerService.getCart(tableID, MyData.branchCode, "1");
+    await providerService.getCartList(tableID, "1");
   }
 
   Widget _buildTabContent(
@@ -287,13 +317,14 @@ class _CartPage1State extends State<CartPage1> {
                                                 ),
                                                 Padding(
                                                   padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 8.0),
+                                                      .symmetric(horizontal: 8),
                                                   child: Text(
-                                                    item.orderListQty
-                                                        .toString(),
+                                                    "${item.orderListQty}",
                                                     style: const TextStyle(
-                                                        fontSize: 18),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
                                                 ),
                                                 Container(
@@ -336,133 +367,32 @@ class _CartPage1State extends State<CartPage1> {
                                 ],
                               ),
                             ),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       );
                     },
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
+                    separatorBuilder: (context, index) => const Divider(
+                      color: Colors.black,
+                      thickness: 0.1,
+                    ),
                   )
-                : Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: const Column(
-                            children: [
-                              Icon(Icons.shopping_cart_outlined, size: 70),
-                              Text("( ບໍ່ມີລາຍການ )")
-                            ],
-                          ),
-                        ),
-                      ],
+                : const Center(
+                    child: Text(
+                      'ບໍ່ມີລາຍການກະຕ໋າ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
           ),
         ),
-        const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 5,
-                offset: const Offset(0, -2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "ລວມຍອດ",
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    "${MyData.formatnumber(providerService.cartNetTotal)}₭",
-                    style: const TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-              // const SizedBox(height: 15),
-              // ElevatedButton(
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Colors.blue,
-              //     padding:
-              //         const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-              //     shape: const RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.all(
-              //         Radius.circular(10),
-              //       ),
-              //     ),
-              //     minimumSize: const Size.fromHeight(35),
-              //   ),
-              //   onPressed: () async {
-              //     final orderListCodes = providerService.cartList
-              //         .map((item) => item.orderListCode.toString())
-              //         .toList();
-
-              //     if (orderListCodes.isNotEmpty) {
-              //       await providerService.getConfirm(orderListCodes);
-              //       providerService.getCart(tableID, MyData.branchCode, 1);
-              //       providerService.getCartList(tableID);
-              //       AwesomeDialog(
-              //         context: context,
-              //         animType: AnimType.leftSlide,
-              //         headerAnimationLoop: true,
-              //         dialogType: DialogType.success,
-              //         showCloseIcon: true,
-              //         title: 'ແຈ້ງເຕືອນ',
-              //         desc: 'ຢືນຢັນອໍເດີສໍາເລັດແລ້ວ',
-              //         btnOkText: 'ປິດ',
-              //         btnOkIcon: Icons.check_circle,
-              //       ).show();
-              //     } else {
-              //       AwesomeDialog(
-              //         context: context,
-              //         dialogType: DialogType.error,
-              //         animType: AnimType.rightSlide,
-              //         headerAnimationLoop: true,
-              //         title: 'ແຈ້ງເຕືອນ',
-              //         desc: 'ກະຕ໋າຂອງທ່ານ ຍັງບໍ່ມີຂໍໍມູນ',
-              //         btnOkIcon: Icons.cancel,
-              //         btnOkColor: Colors.red,
-              //         btnOkText: 'ປິດ',
-              //       ).show();
-              //     }
-              //   },
-              //   child: const Text(
-              //     "ຢືນຢັນອໍເດີ",
-              //     style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 16,
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
+        const Divider(
+          height: 1,
+          color: Colors.grey,
+          thickness: 0.5,
         ),
       ],
     );
