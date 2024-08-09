@@ -26,7 +26,7 @@ class _CookPageState extends State<CookPage> {
     });
 
     socket?.on('orderCook', (data) {
-      print('Received Cook order: ${data['message']}');
+      print('Received Cook order event : $data');
       setState(() {
         cookOrderConfirmation = data['message'];
       });
