@@ -312,6 +312,26 @@ class APIService {
     }
   }
 
+  Future<bool> deleteCartSuccess(String orderlistcode, String table) async {
+    final response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?delete_cart_success'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "order_list_code": orderlistcode,
+        "order_list_table_fk": table,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print("result: ${response.statusCode}");
+      return true;
+    } else {
+      throw Exception('Failed to update qty: ${response.statusCode}');
+    }
+  }
+
   Future<bool> confirmOrder(List<String> orderListCode, status) async {
     final url = Uri.parse('http://api-azor.plc.la/update_cart');
 
@@ -336,23 +356,4 @@ class APIService {
       return false; // Indicate failure
     }
   }
-
-  // Future<void> confirmOrder(List<String> orderListCodes) async {
-  //   final url = Uri.parse('http://api-azor.plc.la/update_cart');
-  //   final response = await http.post(
-  //     url,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: json.encode({
-  //       'order_list_codes': orderListCodes,
-  //     }),
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     print('Success: ${response.body}');
-  //   } else {
-  //     print('Failed: ${response.statusCode} ${response.body}');
-  //   }
-  // }
 }

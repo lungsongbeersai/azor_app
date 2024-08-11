@@ -209,11 +209,11 @@ class _CartPage2State extends State<CartPage2> {
                                                     EasyLoading.show(
                                                         status: 'Deleting...');
                                                     providerService
-                                                        .getDeleteCart(
+                                                        .getDeleteSccessCart(
                                                             item.orderListCode ??
                                                                 '',
                                                             tableID.toString(),
-                                                            '1')
+                                                            '2')
                                                         .then((_) {
                                                       EasyLoading.dismiss();
                                                     }).catchError((e) {

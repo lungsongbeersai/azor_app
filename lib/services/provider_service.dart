@@ -350,6 +350,24 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  Future<bool> getDeleteSccessCart(
+      String orderlistcode, String table, String status) async {
+    final isSuccess = await APIService()
+        .deleteCartSuccess(orderlistcode.toString(), table.toString());
+    if (isSuccess == true) {
+      EasyLoading.dismiss();
+      resetQuantity();
+      getCartList(table, status);
+      getCartList2(table);
+      getTable();
+      notifyListeners();
+      return true;
+    } else {
+      EasyLoading.dismiss();
+      return false;
+    }
+  }
+
   Future<bool> getConfirm(List<String> orderListCodes, status) async {
     EasyLoading.show(status: 'ກໍາລັງໂຫຼດ...');
 
