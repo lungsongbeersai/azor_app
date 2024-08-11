@@ -200,7 +200,59 @@ class APIService {
       body: jsonEncode(<String, String>{
         'order_list_table_fk': tableID,
         'order_list_branch_fk': branchID,
-        'order_list_status_order': status
+        'order_list_status_order': status.toString()
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      cartList = (json.decode(response.body) as List)
+          .map((e) => CartModels.fromJson(e))
+          .toList();
+      return cartList;
+    } else {
+      throw Exception(
+          'Failed to fetch Product, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<List<CartModels>> cartApi2(
+      String tableID, String branchID, int status) async {
+    List<CartModels> cartList = [];
+    final response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?carts'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'order_list_table_fk': tableID,
+        'order_list_branch_fk': branchID,
+        'order_list_status_order': status.toString()
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      cartList = (json.decode(response.body) as List)
+          .map((e) => CartModels.fromJson(e))
+          .toList();
+      return cartList;
+    } else {
+      throw Exception(
+          'Failed to fetch Product, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<List<CartModels>> cartApi3(
+      String tableID, String branchID, int status) async {
+    List<CartModels> cartList = [];
+    final response = await http.post(
+      Uri.parse('${urlAPI.toString()}/?carts'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'order_list_table_fk': tableID,
+        'order_list_branch_fk': branchID,
+        'order_list_status_order': status.toString()
       }),
     );
 
@@ -276,14 +328,11 @@ class APIService {
       );
 
       if (response.statusCode == 200) {
-        print('Success: ${response.body}');
         return true; // Indicate success
       } else {
-        print('Failed: ${response.statusCode} ${response.body}');
         return false; // Indicate failure
       }
     } catch (error) {
-      print('Error: $error');
       return false; // Indicate failure
     }
   }

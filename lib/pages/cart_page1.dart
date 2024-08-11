@@ -168,8 +168,6 @@ class _CartPage1State extends State<CartPage1> {
                         btnOkText: 'ປິດ',
                         btnOkIcon: Icons.check_circle,
                       ).show();
-                    } else {
-                      // Handle failure scenario if needed
                     }
                   } catch (e) {
                     print('Error processing order: $e');

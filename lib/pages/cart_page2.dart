@@ -3,6 +3,7 @@ import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class CartPage2 extends StatefulWidget {
@@ -26,15 +27,15 @@ class _CartPage2State extends State<CartPage2> {
         final args = arguments.split(',');
         if (args.isNotEmpty) {
           tableID = args[0];
-          final providerService =
-              Provider.of<ProviderService>(context, listen: false);
-          await providerService.getCart(tableID, '2');
-          await providerService.getCartList(tableID, '2');
-          setState(() {
-            isLoading = false;
-          });
         }
       }
+      final providerService =
+          Provider.of<ProviderService>(context, listen: false);
+      await providerService.getCart2(tableID);
+      await providerService.getCartList2(tableID);
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -44,8 +45,8 @@ class _CartPage2State extends State<CartPage2> {
     });
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart(tableID, '2');
-    await providerService.getCartList(tableID, '2');
+    await providerService.getCart2(tableID);
+    await providerService.getCartList2(tableID);
     setState(() {
       isLoading = false;
     });
@@ -54,7 +55,7 @@ class _CartPage2State extends State<CartPage2> {
   @override
   Widget build(BuildContext context) {
     final providerService = Provider.of<ProviderService>(context);
-    final carts = providerService.cartList;
+    final carts = providerService.cartList2;
 
     return Scaffold(
       appBar: AppBar(
@@ -205,12 +206,22 @@ class _CartPage2State extends State<CartPage2> {
                                                   icon: const Icon(Icons.delete,
                                                       size: 16),
                                                   onPressed: () {
+                                                    EasyLoading.show(
+                                                        status: 'Deleting...');
                                                     providerService
                                                         .getDeleteCart(
                                                             item.orderListCode ??
                                                                 '',
                                                             tableID.toString(),
-                                                            '2');
+                                                            '1')
+                                                        .then((_) {
+                                                      EasyLoading.dismiss();
+                                                    }).catchError((e) {
+                                                      print(
+                                                        'Error deleting: $e',
+                                                      );
+                                                      EasyLoading.dismiss();
+                                                    });
                                                   },
                                                   color: Colors.redAccent,
                                                 ),
@@ -297,7 +308,7 @@ class _CartPage2State extends State<CartPage2> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    "${MyData.formatnumber(providerService.cartNetTotal)}₭",
+                    "${MyData.formatnumber(providerService.cartNetTotal2)}₭",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

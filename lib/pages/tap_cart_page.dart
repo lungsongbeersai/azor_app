@@ -14,6 +14,15 @@ class TapCartPage extends StatefulWidget {
 
 class _TapCartPageState extends State<TapCartPage> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // รีเซ็ตหน้าให้เริ่มต้นที่ Tap 0
+      Provider.of<ProviderService>(context, listen: false).resetPage();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
@@ -33,10 +42,13 @@ class _TapCartPageState extends State<TapCartPage> {
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: true,
         currentIndex:
-            Provider.of<ProviderService>(context, listen: false).pageSelected,
-        onTap: (value) async {
+            Provider.of<ProviderService>(context, listen: true).pageSelected,
+        onTap: (value) {
           Provider.of<ProviderService>(context, listen: false).pageSelected =
               value;
+          Provider.of<ProviderService>(context, listen: false)
+              .pagecontroller
+              .jumpToPage(value);
         },
         items: const [
           BottomNavigationBarItem(

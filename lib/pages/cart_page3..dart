@@ -1,7 +1,9 @@
 import 'package:azor/models/cart_models.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
+import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class CartPage3 extends StatefulWidget {
@@ -14,36 +16,46 @@ class CartPage3 extends StatefulWidget {
 class _CartPage3State extends State<CartPage3> {
   double bottomSize = 120;
   String tableID = "";
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final arguments = ModalRoute.of(context)?.settings.arguments as String?;
       if (arguments != null) {
         final args = arguments.split(',');
         if (args.isNotEmpty) {
           tableID = args[0];
-          final providerService =
-              Provider.of<ProviderService>(context, listen: false);
-          providerService.getCart(tableID, '3');
-          providerService.getCartList(tableID, '3');
         }
       }
+      final providerService =
+          Provider.of<ProviderService>(context, listen: false);
+      await providerService.getCart3(tableID);
+      await providerService.getCartList3(tableID);
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
   Future<void> _refreshCart() async {
+    setState(() {
+      isLoading = true;
+    });
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart(tableID, '3');
-    await providerService.getCartList(tableID, '3');
+    await providerService.getCart3(tableID);
+    await providerService.getCartList3(tableID);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final providerService = Provider.of<ProviderService>(context);
-    final carts = providerService.cartList;
+    final carts = providerService.cartList3;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,10 +78,26 @@ class _CartPage3State extends State<CartPage3> {
           padding: const EdgeInsets.all(8.0),
           child: RefreshIndicator(
             onRefresh: _refreshCart,
-            child: _buildTabContent(carts, 2, providerService),
+            child: isLoading
+                ? _buildLoadingIndicator()
+                : _buildTabContent(carts, 2, providerService),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return ListView.builder(
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return CardLoading(
+          height: 100,
+          width: double.infinity,
+          borderRadius: BorderRadius.circular(10),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        );
+      },
     );
   }
 
@@ -264,7 +292,7 @@ class _CartPage3State extends State<CartPage3> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    "${MyData.formatnumber(providerService.cartNetTotal)}₭",
+                    "${MyData.formatnumber(providerService.cartNetTotal3)}₭",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

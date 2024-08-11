@@ -18,9 +18,15 @@ class ProviderService extends ChangeNotifier {
   List<ProductListModel> productList = [];
   List<ProductGetid> productID = [];
   List<CartModels> cartList = [];
+  List<CartModels> cartList2 = [];
+  List<CartModels> cartList3 = [];
 
   int cartNetTotal = 0;
   int cartQty = 0;
+  int cartNetTotal2 = 0;
+  int cartQty2 = 0;
+  int cartNetTotal3 = 0;
+  int cartQty3 = 0;
   int itemCount = 0;
   int _quantity = 1;
   String _selectedSize = '';
@@ -40,20 +46,32 @@ class ProviderService extends ChangeNotifier {
   final PageController _pageController = PageController(initialPage: 1);
   PageController get pageController => _pageController;
 
-  final PageController _pagecontroller = PageController(initialPage: 0);
-  PageController get pagecontroller => _pagecontroller;
-
   set pageselected(int index) {
-    _pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 5), curve: Curves.ease);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 5),
+      curve: Curves.ease,
+    );
     _pageselectedIndex = index;
     notifyListeners();
   }
 
+  final PageController _pagecontroller = PageController(initialPage: 0);
+  PageController get pagecontroller => _pagecontroller;
+
   set pageSelected(int index) {
     _pageSelectedIndex = index;
-    _pagecontroller.animateToPage(index,
-        duration: const Duration(milliseconds: 5), curve: Curves.bounceIn);
+    _pagecontroller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 5),
+      curve: Curves.bounceIn,
+    );
+    notifyListeners();
+  }
+
+  void resetPage() {
+    _pageSelectedIndex = 0;
+    pagecontroller.jumpToPage(0);
     notifyListeners();
   }
 
@@ -137,7 +155,7 @@ class ProviderService extends ChangeNotifier {
   }
 
   getTableGetId(String brachID, String zoneID, int itemActive) async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     try {
       selectedIndex = itemActive;
       tableList =
@@ -223,8 +241,25 @@ class ProviderService extends ChangeNotifier {
 
   getCart(String tableID, String status) async {
     try {
-      cartList = await APIService()
-          .cartApi(tableID.toString(), MyData.branchCode, status.toString());
+      cartList = await APIService().cartApi(tableID, MyData.branchCode, status);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching Cart: $e');
+    }
+  }
+
+  getCart2(String tableID) async {
+    try {
+      cartList2 = await APIService().cartApi2(tableID, MyData.branchCode, 2);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching Cart: $e');
+    }
+  }
+
+  getCart3(String tableID) async {
+    try {
+      cartList3 = await APIService().cartApi3(tableID, MyData.branchCode, 3);
       notifyListeners();
     } catch (e) {
       print('Error fetching Cart: $e');
@@ -232,8 +267,11 @@ class ProviderService extends ChangeNotifier {
   }
 
   getCartList(String tableID, String status) async {
-    cartList = await APIService()
-        .cartApi(tableID, MyData.branchCode, status.toString());
+    cartList = await APIService().cartApi(
+      tableID,
+      MyData.branchCode,
+      status,
+    );
     cartNetTotal = 0;
     cartQty = 0;
     itemCount = 0;
@@ -242,6 +280,38 @@ class ProviderService extends ChangeNotifier {
       cartQty += int.parse(item.orderListQty.toString());
       cartNetTotal += int.parse(item.orderListTotal.toString());
       itemCount += 1;
+    }
+    notifyListeners();
+  }
+
+  getCartList2(String tableID) async {
+    cartList2 = await APIService().cartApi2(
+      tableID,
+      MyData.branchCode,
+      2,
+    );
+    cartNetTotal2 = 0;
+    cartQty2 = 0;
+    for (int i = 0; i < cartList2.length; i++) {
+      final item = cartList2[i];
+      cartQty2 += int.parse(item.orderListQty.toString());
+      cartNetTotal2 += int.parse(item.orderListTotal.toString());
+    }
+    notifyListeners();
+  }
+
+  getCartList3(String tableID) async {
+    cartList3 = await APIService().cartApi3(
+      tableID,
+      MyData.branchCode,
+      3,
+    );
+    cartNetTotal3 = 0;
+    cartQty3 = 0;
+    for (int i = 0; i < cartList3.length; i++) {
+      final item = cartList3[i];
+      cartQty3 += int.parse(item.orderListQty.toString());
+      cartNetTotal3 += int.parse(item.orderListTotal.toString());
     }
     notifyListeners();
   }
@@ -270,6 +340,7 @@ class ProviderService extends ChangeNotifier {
       EasyLoading.dismiss();
       resetQuantity();
       getCartList(table, status);
+      getCartList2(table);
       getTable();
       notifyListeners();
       return true;
