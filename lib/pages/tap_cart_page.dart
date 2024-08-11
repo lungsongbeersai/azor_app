@@ -3,7 +3,6 @@ import 'package:azor/pages/cart_page2.dart';
 import 'package:azor/pages/cart_page3..dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class TapCartPage extends StatefulWidget {
