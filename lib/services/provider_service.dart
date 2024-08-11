@@ -20,6 +20,8 @@ class ProviderService extends ChangeNotifier {
   List<CartModels> cartList = [];
 
   int cartNetTotal = 0;
+  int cartQty = 0;
+  int itemCount = 0;
   int _quantity = 1;
   String _selectedSize = '';
 
@@ -38,7 +40,7 @@ class ProviderService extends ChangeNotifier {
   final PageController _pageController = PageController(initialPage: 1);
   PageController get pageController => _pageController;
 
-  PageController _pagecontroller = PageController(initialPage: 0);
+  final PageController _pagecontroller = PageController(initialPage: 0);
   PageController get pagecontroller => _pagecontroller;
 
   set pageselected(int index) {
@@ -210,6 +212,7 @@ class ProviderService extends ChangeNotifier {
       EasyLoading.dismiss();
       resetQuantity();
       getTable();
+      getCartList(billtable, '1');
       notifyListeners();
       return true;
     } else {
@@ -218,10 +221,10 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  getCart(String tableID, String branchID, String status) async {
+  getCart(String tableID, String status) async {
     try {
       cartList = await APIService()
-          .cartApi(tableID, MyData.branchCode, status.toString());
+          .cartApi(tableID.toString(), MyData.branchCode, status.toString());
       notifyListeners();
     } catch (e) {
       print('Error fetching Cart: $e');
@@ -232,9 +235,13 @@ class ProviderService extends ChangeNotifier {
     cartList = await APIService()
         .cartApi(tableID, MyData.branchCode, status.toString());
     cartNetTotal = 0;
+    cartQty = 0;
+    itemCount = 0;
     for (int i = 0; i < cartList.length; i++) {
       final item = cartList[i];
+      cartQty += int.parse(item.orderListQty.toString());
       cartNetTotal += int.parse(item.orderListTotal.toString());
+      itemCount += 1;
     }
     notifyListeners();
   }
@@ -272,10 +279,10 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  Future<bool> getConfirm(List<String> orderListCodes) async {
+  Future<bool> getConfirm(List<String> orderListCodes, status) async {
     EasyLoading.show(status: 'ກໍາລັງໂຫຼດ...');
 
-    final isSuccess = await APIService().confirmOrder(orderListCodes);
+    final isSuccess = await APIService().confirmOrder(orderListCodes, status);
 
     if (isSuccess) {
       notifyListeners();

@@ -1,4 +1,5 @@
 import 'package:azor/services/provider_service.dart';
+import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -16,6 +17,18 @@ class _ProductListState extends State<ProductList> {
   bool isLoading = true;
   bool showScrollToTopButton = false;
   final ScrollController _scrollController = ScrollController();
+  String tableID = "";
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final tableCode = ModalRoute.of(context)?.settings.arguments as String?;
+    if (tableCode != null) {
+      final args = tableCode.split(',');
+      if (args.isNotEmpty) {
+        tableID = args[0];
+      }
+    }
+    Provider.of<ProviderService>(context).getCartList(tableID, '1');
+  }
 
   @override
   void initState() {
@@ -384,7 +397,7 @@ class _ProductListState extends State<ProductList> {
             clipBehavior: Clip.none,
             children: [
               FloatingActionButton(
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.blue,
                 onPressed: () async {
                   Navigator.pushNamed(
                     context,
@@ -405,9 +418,9 @@ class _ProductListState extends State<ProductList> {
                   duration: const Duration(milliseconds: 300),
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: providerService.cartList.length > 0
+                    color: providerService.cartList.isNotEmpty
                         ? Colors.red
-                        : Colors.grey,
+                        : Colors.black,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -422,7 +435,7 @@ class _ProductListState extends State<ProductList> {
                     minHeight: 20,
                   ),
                   child: Text(
-                    '${providerService.cartList.length}',
+                    '${providerService.itemCount} ',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,

@@ -260,7 +260,7 @@ class APIService {
     }
   }
 
-  Future<bool> confirmOrder(List<String> orderListCodes) async {
+  Future<bool> confirmOrder(List<String> orderListCode, status) async {
     final url = Uri.parse('http://api-azor.plc.la/update_cart');
 
     try {
@@ -270,7 +270,8 @@ class APIService {
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          'order_list_codes': orderListCodes,
+          'order_list_code': orderListCode,
+          'status': status,
         }),
       );
 

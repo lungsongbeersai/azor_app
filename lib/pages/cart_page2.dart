@@ -1,6 +1,7 @@
 import 'package:azor/models/cart_models.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
+import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,11 +15,12 @@ class CartPage2 extends StatefulWidget {
 class _CartPage2State extends State<CartPage2> {
   double bottomSize = 120;
   String tableID = "";
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final arguments = ModalRoute.of(context)?.settings.arguments as String?;
       if (arguments != null) {
         final args = arguments.split(',');
@@ -26,18 +28,27 @@ class _CartPage2State extends State<CartPage2> {
           tableID = args[0];
           final providerService =
               Provider.of<ProviderService>(context, listen: false);
-          providerService.getCart(tableID, MyData.branchCode, '2');
-          providerService.getCartList(tableID, '2');
+          await providerService.getCart(tableID, '2');
+          await providerService.getCartList(tableID, '2');
+          setState(() {
+            isLoading = false;
+          });
         }
       }
     });
   }
 
   Future<void> _refreshCart() async {
+    setState(() {
+      isLoading = true;
+    });
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart(tableID, MyData.branchCode, '2');
+    await providerService.getCart(tableID, '2');
     await providerService.getCartList(tableID, '2');
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -66,10 +77,26 @@ class _CartPage2State extends State<CartPage2> {
           padding: const EdgeInsets.all(8.0),
           child: RefreshIndicator(
             onRefresh: _refreshCart,
-            child: _buildTabContent(carts, 2, providerService),
+            child: isLoading
+                ? _buildLoadingIndicator()
+                : _buildTabContent(carts, 2, providerService),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return ListView.builder(
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return CardLoading(
+          height: 100,
+          width: double.infinity,
+          borderRadius: BorderRadius.circular(10),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        );
+      },
     );
   }
 
@@ -228,7 +255,7 @@ class _CartPage2State extends State<CartPage2> {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: const Column(
                             children: [
-                              Icon(Icons.shopping_cart_outlined, size: 70),
+                              Icon(Icons.shopping_cart_rounded, size: 70),
                               Text("( ບໍ່ມີລາຍການ )")
                             ],
                           ),
@@ -263,7 +290,7 @@ class _CartPage2State extends State<CartPage2> {
                   const Text(
                     "ລວມຍອດ",
                     style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                     maxLines: 1,
@@ -272,7 +299,7 @@ class _CartPage2State extends State<CartPage2> {
                   Text(
                     "${MyData.formatnumber(providerService.cartNetTotal)}₭",
                     style: const TextStyle(
-                      fontSize: 23,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),

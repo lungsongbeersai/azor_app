@@ -3,6 +3,8 @@ import 'package:azor/models/cart_models.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
+import 'package:card_loading/card_loading.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -17,6 +19,7 @@ class _CartPage1State extends State<CartPage1> {
   IO.Socket? socket;
   double bottomSize = 120;
   String tableID = "";
+
   @override
   void initState() {
     super.initState();
@@ -42,8 +45,7 @@ class _CartPage1State extends State<CartPage1> {
           tableID = args[0];
           final providerService =
               Provider.of<ProviderService>(context, listen: false);
-          providerService.getCart(tableID, MyData.branchCode, "1");
-          providerService.getCartList(tableID, "1");
+          _fetchCartData(providerService);
         }
       }
     });
@@ -54,6 +56,44 @@ class _CartPage1State extends State<CartPage1> {
     socket?.disconnect();
     super.dispose();
   }
+
+  Future<void> _fetchCartData(ProviderService providerService) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await providerService.getCart(tableID, "1");
+      await providerService.getCartList(tableID, "1");
+    } catch (e) {
+      print('Error fetching cart data: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _refreshCart() async {
+    final providerService =
+        Provider.of<ProviderService>(context, listen: false);
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await providerService.getCart(tableID, "1");
+      await providerService.getCartList(tableID, "1");
+    } catch (e) {
+      print('Error refreshing cart: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -92,37 +132,52 @@ class _CartPage1State extends State<CartPage1> {
             child: IconButton(
               icon: const Icon(Icons.print),
               iconSize: 30,
-              // ที่คุณกดปุ่มเพื่อส่งออร์เดอร์
               onPressed: () async {
                 final orderListCodes = providerService.cartList
                     .map((item) => item.orderListCode.toString())
                     .toList();
+                final status = providerService.cartList
+                    .map((item) => item.orderListStatusCook)
+                    .toList();
 
                 if (orderListCodes.isNotEmpty) {
-                  await providerService.getConfirm(orderListCodes);
-                  providerService.getCart(tableID, MyData.branchCode, "1");
-                  providerService.getCartList(tableID, "1");
+                  try {
+                    final isSuccess = await providerService.getConfirm(
+                        orderListCodes, status);
 
-                  // Emit socket event
-                  // socket?.emit('order', {'orderListCodes': orderListCodes});
-                  socket?.emit('order', {
-                    'orderListCodes': orderListCodes,
-                    'status': providerService.cartList
-                        .map((item) => item.orderListStatusCook)
-                        .toList(),
-                  });
+                    if (isSuccess) {
+                      await providerService.getCart(tableID, "1");
+                      await providerService.getCartList(tableID, "1");
 
-                  AwesomeDialog(
-                    context: context,
-                    animType: AnimType.leftSlide,
-                    headerAnimationLoop: true,
-                    dialogType: DialogType.success,
-                    showCloseIcon: true,
-                    title: 'ແຈ້ງເຕືອນ',
-                    desc: 'ຢືນຢັນອໍເດີສໍາເລັດແລ້ວ',
-                    btnOkText: 'ປິດ',
-                    btnOkIcon: Icons.check_circle,
-                  ).show();
+                      print('Emitting order event with codes: $orderListCodes');
+                      print('With status: $status');
+
+                      socket?.emit('order', {
+                        'orderListCodes': orderListCodes,
+                        'status': status,
+                      });
+
+                      AwesomeDialog(
+                        context: context,
+                        animType: AnimType.leftSlide,
+                        headerAnimationLoop: true,
+                        dialogType: DialogType.success,
+                        showCloseIcon: true,
+                        title: 'ແຈ້ງເຕືອນ',
+                        desc: 'ຢືນຢັນອໍເດີສໍາເລັດແລ້ວ',
+                        btnOkText: 'ປິດ',
+                        btnOkIcon: Icons.check_circle,
+                      ).show();
+                    } else {
+                      // Handle failure scenario if needed
+                    }
+                  } catch (e) {
+                    print('Error processing order: $e');
+                  } finally {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  }
                 } else {
                   AwesomeDialog(
                     context: context,
@@ -137,8 +192,7 @@ class _CartPage1State extends State<CartPage1> {
                   ).show();
                 }
               },
-
-              color: Colors.blue, // Icon color
+              color: Colors.blue,
             ),
           ),
         ],
@@ -149,18 +203,27 @@ class _CartPage1State extends State<CartPage1> {
           padding: const EdgeInsets.all(8.0),
           child: RefreshIndicator(
             onRefresh: _refreshCart,
-            child: _buildTabContent(carts, 1, providerService),
+            child: _isLoading
+                ? _buildLoadingIndicator()
+                : _buildTabContent(carts, 1, providerService),
           ),
         ),
       ),
     );
   }
 
-  Future<void> _refreshCart() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart(tableID, MyData.branchCode, "1");
-    await providerService.getCartList(tableID, "1");
+  Widget _buildLoadingIndicator() {
+    return ListView.builder(
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return CardLoading(
+          height: 100,
+          width: double.infinity,
+          borderRadius: BorderRadius.circular(10),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        );
+      },
+    );
   }
 
   Widget _buildTabContent(
@@ -269,12 +332,22 @@ class _CartPage1State extends State<CartPage1> {
                                                   icon: const Icon(Icons.delete,
                                                       size: 16),
                                                   onPressed: () {
+                                                    EasyLoading.show(
+                                                        status: 'Deleting...');
                                                     providerService
                                                         .getDeleteCart(
                                                             item.orderListCode ??
                                                                 '',
                                                             tableID.toString(),
-                                                            '1');
+                                                            '1')
+                                                        .then((_) {
+                                                      EasyLoading.dismiss();
+                                                    }).catchError((e) {
+                                                      // Handle exceptions if needed
+                                                      print(
+                                                          'Error deleting cart item: $e');
+                                                      EasyLoading.dismiss();
+                                                    });
                                                   },
                                                   color: Colors.redAccent,
                                                 ),
@@ -303,14 +376,28 @@ class _CartPage1State extends State<CartPage1> {
                                                                 null &&
                                                             item.orderListQty! >
                                                                 1) {
-                                                          providerService.getupdateCart(
-                                                              item.orderListCode ??
-                                                                  '',
-                                                              item.orderListPercented ??
-                                                                  0,
-                                                              'decrease',
-                                                              tableID,
-                                                              '1');
+                                                          EasyLoading.show(
+                                                              status:
+                                                                  'Updating...');
+                                                          providerService
+                                                              .getupdateCart(
+                                                                  item.orderListCode ??
+                                                                      '',
+                                                                  item.orderListPercented ??
+                                                                      0,
+                                                                  'decrease',
+                                                                  tableID,
+                                                                  '1')
+                                                              .then((_) {
+                                                            EasyLoading
+                                                                .dismiss();
+                                                          }).catchError((e) {
+                                                            // Handle exceptions if needed
+                                                            print(
+                                                                'Error updating cart item: $e');
+                                                            EasyLoading
+                                                                .dismiss();
+                                                          });
                                                         }
                                                       },
                                                       color: Colors.grey,
@@ -346,14 +433,26 @@ class _CartPage1State extends State<CartPage1> {
                                                           Icons.add,
                                                           size: 16),
                                                       onPressed: () {
-                                                        providerService.getupdateCart(
-                                                            item.orderListCode ??
-                                                                '',
-                                                            item.orderListPercented ??
-                                                                0,
-                                                            'increase',
-                                                            tableID,
-                                                            '1');
+                                                        EasyLoading.show(
+                                                            status:
+                                                                'Updating...');
+                                                        providerService
+                                                            .getupdateCart(
+                                                                item.orderListCode ??
+                                                                    '',
+                                                                item.orderListPercented ??
+                                                                    0,
+                                                                'increase',
+                                                                tableID,
+                                                                '1')
+                                                            .then((_) {
+                                                          EasyLoading.dismiss();
+                                                        }).catchError((e) {
+                                                          // Handle exceptions if needed
+                                                          print(
+                                                              'Error updating cart item: $e');
+                                                          EasyLoading.dismiss();
+                                                        });
                                                       },
                                                       color: Colors.grey,
                                                     ),
@@ -379,22 +478,70 @@ class _CartPage1State extends State<CartPage1> {
                       thickness: 0.1,
                     ),
                   )
-                : const Center(
-                    child: Text(
-                      'ບໍ່ມີລາຍການກະຕ໋າ',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey,
-                      ),
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: const Column(
+                            children: [
+                              Icon(Icons.shopping_cart_rounded, size: 70),
+                              Text("( ບໍ່ມີລາຍການ )")
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
           ),
         ),
-        const Divider(
-          height: 1,
-          color: Colors.grey,
-          thickness: 0.5,
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 5,
+                offset: const Offset(0, -2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "ລວມຍອດ",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    "${MyData.formatnumber(providerService.cartNetTotal)}₭",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );

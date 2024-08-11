@@ -3,6 +3,7 @@ import 'package:azor/pages/cart_page2.dart';
 import 'package:azor/pages/cart_page3..dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class TapCartPage extends StatefulWidget {
@@ -31,29 +32,28 @@ class _TapCartPageState extends State<TapCartPage> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: true,
-          currentIndex:
-              Provider.of<ProviderService>(context, listen: false).pageSelected,
-          onTap: (value) {
-            Provider.of<ProviderService>(context, listen: false).pageSelected =
-                value;
-            Provider.of<ProviderService>(context, listen: false)
-                .getPullRefresh();
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.filter_1),
-              label: 'ກໍາລັງສັ່ງ',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.filter_2),
-              label: 'ຢືນຢັນອໍເດີ',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.filter_3),
-              label: 'ສໍາເລັດແລ້ວ',
-            ),
-          ]),
+        showSelectedLabels: true,
+        currentIndex:
+            Provider.of<ProviderService>(context, listen: false).pageSelected,
+        onTap: (value) async {
+          Provider.of<ProviderService>(context, listen: false).pageSelected =
+              value;
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.filter_1),
+            label: 'ກໍາລັງສັ່ງ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.filter_2),
+            label: 'ຢືນຢັນອໍເດີ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.filter_3),
+            label: 'ສໍາເລັດແລ້ວ',
+          ),
+        ],
+      ),
     );
   }
 }
