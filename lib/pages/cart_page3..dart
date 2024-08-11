@@ -3,7 +3,6 @@ import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class CartPage3 extends StatefulWidget {
