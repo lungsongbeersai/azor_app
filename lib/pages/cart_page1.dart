@@ -245,7 +245,7 @@ class _CartPage1State extends State<CartPage1> {
                           children: [
                             const SizedBox(height: 10),
                             SizedBox(
-                              height: 95,
+                              height: 110,
                               child: Row(
                                 children: [
                                   Container(
@@ -254,7 +254,7 @@ class _CartPage1State extends State<CartPage1> {
                                       borderRadius: BorderRadius.circular(10),
                                       child: FadeInImage(
                                         width: 100,
-                                        height: 100,
+                                        height: 110,
                                         placeholder: const AssetImage(
                                           "assets/images/loading_plaholder.gif",
                                         ),
@@ -278,6 +278,42 @@ class _CartPage1State extends State<CartPage1> {
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 60,
+                                              child: Text(
+                                                "ໝາຍເຫດ:",
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black45,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Container(
+                                                padding: const EdgeInsets.only(
+                                                    right: 1),
+                                                child: Text(
+                                                  "${item.orderListNoteRemark}",
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black87,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         Row(
                                           mainAxisAlignment:

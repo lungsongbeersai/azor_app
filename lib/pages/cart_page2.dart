@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:azor/models/cart_models.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
@@ -122,7 +123,7 @@ class _CartPage2State extends State<CartPage2> {
                           children: [
                             const SizedBox(height: 10),
                             SizedBox(
-                              height: 95,
+                              height: 110,
                               child: Row(
                                 children: [
                                   Container(
@@ -131,7 +132,7 @@ class _CartPage2State extends State<CartPage2> {
                                       borderRadius: BorderRadius.circular(10),
                                       child: FadeInImage(
                                         width: 100,
-                                        height: 100,
+                                        height: 110,
                                         placeholder: const AssetImage(
                                           "assets/images/loading_plaholder.gif",
                                         ),
@@ -155,6 +156,47 @@ class _CartPage2State extends State<CartPage2> {
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              flex: 1,
+                                              child: Container(
+                                                width: 60,
+                                                child: Text(
+                                                  "ໝາຍເຫດ:",
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.black45,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              flex: 2,
+                                              child: Container(
+                                                padding: const EdgeInsets.only(
+                                                    right: 1),
+                                                child: Text(
+                                                  "${item.orderListNoteRemark}",
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black87,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         Row(
                                           mainAxisAlignment:
@@ -207,21 +249,44 @@ class _CartPage2State extends State<CartPage2> {
                                                       size: 16),
                                                   onPressed: () {
                                                     EasyLoading.show(
-                                                        status: 'Deleting...');
-                                                    providerService
-                                                        .getDeleteSccessCart(
-                                                            item.orderListCode ??
-                                                                '',
-                                                            tableID.toString(),
-                                                            '2')
-                                                        .then((_) {
+                                                      status: 'Deleting...',
+                                                    );
+
+                                                    if (item.orderListStatusOrder ==
+                                                        2) {
+                                                      providerService
+                                                          .getDeleteSccessCart(
+                                                              item.orderListCode ??
+                                                                  '',
+                                                              tableID,
+                                                              '2')
+                                                          .then((_) {
+                                                        EasyLoading.dismiss();
+                                                      }).catchError((e) {
+                                                        print(
+                                                          'Error deleting: $e',
+                                                        );
+                                                        EasyLoading.dismiss();
+                                                      });
+                                                    } else {
+                                                      AwesomeDialog(
+                                                        context: context,
+                                                        dialogType:
+                                                            DialogType.error,
+                                                        animType:
+                                                            AnimType.rightSlide,
+                                                        headerAnimationLoop:
+                                                            true,
+                                                        title: 'ແຈ້ງເຕືອນ',
+                                                        desc:
+                                                            'ຂໍອະໄພ ! ອໍເດີນີ້ກໍາລັງຄົວ...',
+                                                        btnOkOnPress: () {},
+                                                        btnOkIcon: Icons.cancel,
+                                                        btnOkColor: Colors.red,
+                                                        btnOkText: 'ປິດ',
+                                                      ).show();
                                                       EasyLoading.dismiss();
-                                                    }).catchError((e) {
-                                                      print(
-                                                        'Error deleting: $e',
-                                                      );
-                                                      EasyLoading.dismiss();
-                                                    });
+                                                    }
                                                   },
                                                   color: Colors.redAccent,
                                                 ),
