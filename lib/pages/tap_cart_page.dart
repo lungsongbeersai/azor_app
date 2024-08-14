@@ -52,15 +52,15 @@ class _TapCartPageState extends State<TapCartPage> {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.filter_1),
+            icon: Icon(Icons.looks_one_outlined),
             label: 'ກໍາລັງສັ່ງ',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.filter_2),
+            icon: Icon(Icons.looks_two_outlined),
             label: 'ຢືນຢັນອໍເດີ',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.filter_3),
+            icon: Icon(Icons.looks_3_outlined),
             label: 'ສໍາເລັດແລ້ວ',
           ),
         ],

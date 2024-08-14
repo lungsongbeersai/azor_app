@@ -40,6 +40,9 @@ class ProviderService extends ChangeNotifier {
   int _pageselectedIndex = 1;
   int get pageselected => _pageselectedIndex;
 
+  int _pageselectedIndex1 = 0;
+  int get pageselected1 => _pageselectedIndex1;
+
   int _pageSelectedIndex = 0;
   int get pageSelected => _pageSelectedIndex;
 
@@ -53,6 +56,19 @@ class ProviderService extends ChangeNotifier {
       curve: Curves.ease,
     );
     _pageselectedIndex = index;
+    notifyListeners();
+  }
+
+  final PageController _pageController1 = PageController(initialPage: 0);
+  PageController get pageController1 => _pageController1;
+
+  set pageselected1(int index) {
+    _pageController1.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 5),
+      curve: Curves.ease,
+    );
+    _pageselectedIndex1 = index;
     notifyListeners();
   }
 

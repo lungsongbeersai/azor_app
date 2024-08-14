@@ -68,12 +68,23 @@ class _CookPageState extends State<CookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cook Page'),
+        backgroundColor: Colors.blue,
+        title: const Text(
+          "ຫ້ອງຄົວ",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: Center(
         child: cookOrderConfirmation != null
             ? Text('Cook Order: $cookOrderConfirmation')
-            : const Text('No new Cook orders'),
+            : const Text('No new Cook orders2'),
       ),
     );
   }
