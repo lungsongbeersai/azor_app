@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart'; // Import this
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class CookPage extends StatefulWidget {
 class _CookPageState extends State<CookPage> {
   IO.Socket? socket;
   String? cookOrderConfirmation;
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Initialize AudioPlayer
 
   @override
   void initState() {
@@ -35,9 +37,9 @@ class _CookPageState extends State<CookPage> {
         setState(() {
           cookOrderConfirmation = data['message'];
         });
-
         if (mounted) {
-          _showOrderConfirmationDialog('Cook Order', data['message']);
+          _playNotificationSound(); // Play sound
+          _showOrderConfirmationSnackbar("ອໍເດີເຂົ້າໃຫມ່");
           _loadCookData();
         }
       }
@@ -53,37 +55,48 @@ class _CookPageState extends State<CookPage> {
   @override
   void dispose() {
     socket?.disconnect();
+    _audioPlayer.dispose(); // Dispose AudioPlayer
     super.dispose();
   }
 
   Future<void> _loadCookData() async {
     try {
-      final providerService =
-          Provider.of<ProviderService>(context, listen: false);
-      await providerService.getCookPageApi(2);
+      if (mounted) {
+        final providerService =
+            Provider.of<ProviderService>(context, listen: false);
+        await providerService.getCookPageApi(2);
+      }
     } catch (e) {
-      print('Error loading cook data: $e');
+      // Handle any errors that might occur
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading cook data: $e'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
-  void _showOrderConfirmationDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
+  void _showOrderConfirmationSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3), // Adjust the duration as needed
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            // Optionally handle the 'OK' button press
+          },
+        ),
+      ),
     );
+  }
+
+  void _playNotificationSound() async {
+    // Play the notification sound
+    await _audioPlayer.play(AssetSource('./assets/audio/i_phone_ding.mp3'));
   }
 
   @override
@@ -120,7 +133,7 @@ class _CookPageState extends State<CookPage> {
                       height: 50,
                       fit: BoxFit.cover,
                     ),
-                    title: Text("${index}" + cookOrder.fullName.toString()),
+                    title: Text(cookOrder.fullName.toString()),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
