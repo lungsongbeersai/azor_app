@@ -84,7 +84,7 @@ class _CookPageState extends State<CookPage> {
       body: Center(
         child: cookOrderConfirmation != null
             ? Text('Cook Order: $cookOrderConfirmation')
-            : const Text('No new Cook orders2'),
+            : const Text('No new Cook orders'),
       ),
     );
   }

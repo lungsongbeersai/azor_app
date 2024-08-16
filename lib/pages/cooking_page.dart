@@ -12,7 +12,7 @@ class _CookingPageState extends State<CookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cooking"),
+        title: Text("ກໍາລັງຄົວ"),
       ),
     );
   }

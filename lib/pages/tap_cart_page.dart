@@ -1,6 +1,6 @@
 import 'package:azor/pages/cart_page1.dart';
 import 'package:azor/pages/cart_page2.dart';
-import 'package:azor/pages/cart_page3..dart';
+import 'package:azor/pages/cart_page3.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

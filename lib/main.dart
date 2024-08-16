@@ -1,8 +1,7 @@
 import 'package:azor/pages/bar_page.dart';
 import 'package:azor/pages/cart_page1.dart';
-import 'package:azor/pages/cart_page3..dart';
+import 'package:azor/pages/cart_page3.dart';
 import 'package:azor/pages/tap_cart_page.dart';
-import 'package:azor/pages/cook_page.dart';
 import 'package:azor/pages/login_page.dart';
 import 'package:azor/pages/product_detail_page.dart';
 import 'package:azor/pages/product_page.dart';
