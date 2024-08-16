@@ -7,6 +7,9 @@ class MyData {
   static String branchName = '';
   static String statusCode = '';
   static String statusName = '';
+  static String cookStatus = '';
+  static String cookName = '';
+  static String offOn = '';
 
   static String formatnumber(dynamic numbers) {
     // final formatter = NumberFormat('#,###');

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:azor/models/cart_models.dart';
 import 'package:azor/models/category_models.dart';
+import 'package:azor/models/cook_models.dart';
 import 'package:azor/models/login_models.dart';
 import 'package:azor/models/product_getid_models.dart';
 import 'package:azor/models/product_models.dart';
@@ -346,7 +347,6 @@ class APIService {
           'status': status,
         }),
       );
-
       if (response.statusCode == 200) {
         return true; // Indicate success
       } else {
@@ -354,6 +354,37 @@ class APIService {
       }
     } catch (error) {
       return false; // Indicate failure
+    }
+  }
+
+  Future<List<CooksModel>> cookPageApi(
+    String branchID,
+    String cookstatus,
+    int orderstatus,
+    String cookingfrom,
+  ) async {
+    List<CooksModel> cookList = [];
+    final response = await http.post(
+      Uri.parse('http://api-azor.plc.la/order_cart'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'order_list_branch_fk': branchID,
+        'order_list_status_cook': cookstatus,
+        'order_list_status_order': orderstatus.toString(),
+        'pro_detail_cooking_status': cookingfrom,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      cookList = (json.decode(response.body) as List)
+          .map((e) => CooksModel.fromJson(e))
+          .toList();
+      return cookList;
+    } else {
+      throw Exception(
+          'Failed to fetch Cook cart, status code: ${response.statusCode}');
     }
   }
 }

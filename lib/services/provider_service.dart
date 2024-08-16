@@ -1,5 +1,6 @@
 import 'package:azor/models/cart_models.dart';
 import 'package:azor/models/category_models.dart';
+import 'package:azor/models/cook_models.dart';
 import 'package:azor/models/login_models.dart';
 import 'package:azor/models/product_getid_models.dart';
 import 'package:azor/models/product_models.dart';
@@ -20,6 +21,7 @@ class ProviderService extends ChangeNotifier {
   List<CartModels> cartList = [];
   List<CartModels> cartList2 = [];
   List<CartModels> cartList3 = [];
+  List<CooksModel> cookList = [];
 
   int cartNetTotal = 0;
   int cartQty = 0;
@@ -91,6 +93,12 @@ class ProviderService extends ChangeNotifier {
     notifyListeners();
   }
 
+  ProviderService() {
+    getZone();
+    getTable();
+    getCookPageApi(2);
+  }
+
   Future<bool> login(String email, String password) async {
     LoginInfo resp =
         await APIService().login(email.toString(), password.toString());
@@ -101,6 +109,9 @@ class ProviderService extends ChangeNotifier {
       _sharedPreferance("branch_name", resp.branchName.toString());
       _sharedPreferance("status_code", resp.statusCode.toString());
       _sharedPreferance("status_name", resp.statusName.toString());
+      _sharedPreferance("cook_status_name", resp.cookingStatus.toString());
+      _sharedPreferance("cook_status_name", resp.cookStatusName.toString());
+      _sharedPreferance("off_on", resp.offOn.toString());
 
       MyData.usersID = resp.usersId.toString();
       MyData.usersName = resp.usersName.toString();
@@ -108,6 +119,9 @@ class ProviderService extends ChangeNotifier {
       MyData.branchName = resp.branchName.toString();
       MyData.statusCode = resp.statusCode.toString();
       MyData.statusName = resp.statusName.toString();
+      MyData.cookStatus = resp.cookingStatus.toString();
+      MyData.cookName = resp.cookStatusName.toString();
+      MyData.offOn = resp.offOn.toString();
       return true;
     } else {
       massageMsg = resp.message.toString();
@@ -397,6 +411,21 @@ class ProviderService extends ChangeNotifier {
     } else {
       EasyLoading.dismiss();
       return false;
+    }
+  }
+
+  getCookPageApi(int orderStatus) async {
+    try {
+      cookList = await APIService().cookPageApi(
+        MyData.branchCode,
+        MyData.offOn,
+        orderStatus,
+        MyData.cookStatus,
+      );
+
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to load Order Cart: $e');
     }
   }
 
