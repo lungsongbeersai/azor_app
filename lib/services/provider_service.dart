@@ -139,6 +139,16 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  Future<void> logout() async {
+    clearSharedPreferences();
+    notifyListeners();
+  }
+
+  Future<void> clearSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
   void incrementQuantity() {
     _quantity++;
     notifyListeners();

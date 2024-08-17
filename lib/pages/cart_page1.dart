@@ -139,6 +139,9 @@ class _CartPage1State extends State<CartPage1> {
                 final status = providerService.cartList
                     .map((item) => item.orderListStatusCook)
                     .toList();
+                final whereCooking = providerService.cartList
+                    .map((item) => item.proDetailCookingStatus)
+                    .toList();
 
                 if (orderListCodes.isNotEmpty) {
                   try {
@@ -155,6 +158,7 @@ class _CartPage1State extends State<CartPage1> {
                       socket?.emit('order', {
                         'orderListCodes': orderListCodes,
                         'status': status,
+                        'whereCooking': whereCooking
                       });
 
                       AwesomeDialog(

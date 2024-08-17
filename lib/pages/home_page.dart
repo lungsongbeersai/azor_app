@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +57,29 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              AwesomeDialog(
+                context: context,
+                dialogType: DialogType.warning,
+                animType: AnimType.topSlide,
+                title: 'ແຈ້ງເຕືອນ',
+                desc: 'ກົດ "ຕົກລົງ" ເພື່ອອອກຈາກລະບົບ?',
+                btnCancelText: 'ປິດໜ້າຕ່າງ',
+                btnOkText: 'ຕົກລົງ',
+                btnCancelOnPress: () {
+                  // Do nothing, just close the dialog
+                },
+                btnOkOnPress: () async {
+                  await providerService.logout();
+                  exit(0);
+                },
+              ).show();
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8),

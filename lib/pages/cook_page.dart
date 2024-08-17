@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:card_loading/card_loading.dart';
@@ -36,14 +39,37 @@ class _CookPageState extends State<CookPage> {
     socket?.on('orderCook', (data) {
       if (mounted) {
         print('Received Cook order event : $data');
+
         setState(() {
-          cookOrderConfirmation = data['message'];
+          if (data['message'] is String) {
+            // Assuming the message is a comma-separated string of IDs
+            final String messageString = data['message'] as String;
+            final List<String> idList =
+                messageString.split(',').map((id) => id.trim()).toList();
+            cookOrderConfirmation = idList.join(', ');
+          } else {
+            // Handle as a single ID if not a string
+            cookOrderConfirmation = data['message'] as String?;
+          }
         });
-        if (mounted) {
+
+        // Check if the message is a comma-separated string and if it contains MyData.cookStatus
+        if (data['message'] is String) {
+          final String messageString = data['message'] as String;
+          final List<String> messageList =
+              messageString.split(',').map((id) => id.trim()).toList();
+          if (messageList.contains(MyData.cookStatus)) {
+            _playNotificationSound();
+            _showOrderConfirmationSnackbar("ອໍເດີເຂົ້າໃຫມ່");
+          }
+        } else if (data['message'] == MyData.cookStatus) {
+          // Check if the message is a single string that matches MyData.cookStatus
           _playNotificationSound();
           _showOrderConfirmationSnackbar("ອໍເດີເຂົ້າໃຫມ່");
-          _loadCookData();
         }
+
+        // Reload cook data
+        _loadCookData();
       }
     });
 
@@ -119,6 +145,7 @@ class _CookPageState extends State<CookPage> {
   Widget build(BuildContext context) {
     final providerService = Provider.of<ProviderService>(context);
     final cookList = providerService.cookList;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -133,6 +160,29 @@ class _CookPageState extends State<CookPage> {
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              AwesomeDialog(
+                context: context,
+                dialogType: DialogType.warning,
+                animType: AnimType.topSlide,
+                title: 'ແຈ້ງເຕືອນ',
+                desc: 'ກົດ "ຕົກລົງ" ເພື່ອອອກຈາກລະບົບ?',
+                btnCancelText: 'ປິດໜ້າຕ່າງ',
+                btnOkText: 'ຕົກລົງ',
+                btnCancelOnPress: () {
+                  // Do nothing, just close the dialog
+                },
+                btnOkOnPress: () async {
+                  await providerService.logout();
+                  exit(0);
+                },
+              ).show();
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8),
