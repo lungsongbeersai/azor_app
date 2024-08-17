@@ -119,7 +119,6 @@ class _CookPageState extends State<CookPage> {
   Widget build(BuildContext context) {
     final providerService = Provider.of<ProviderService>(context);
     final cookList = providerService.cookList;
-    double halfScreenWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
