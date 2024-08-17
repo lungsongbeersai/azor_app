@@ -434,6 +434,7 @@ class ProviderService extends ChangeNotifier {
     getTable();
     getCategory(0);
     getProduct("", "", 1);
+    getCookPageApi(2);
     notifyListeners();
   }
 }

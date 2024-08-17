@@ -4,6 +4,7 @@ class CooksModel {
   String? orderListTableFk;
   String? orderListBranchFk;
   int? orderListQ;
+  String? orderListDateTime;
   String? productPathApi;
   String? fullName;
   String? fullName1;
@@ -17,6 +18,7 @@ class CooksModel {
   String? orderListStatusCook;
   String? orderListNoteRemark;
   String? proDetailCookingStatus;
+  String? tableName;
 
   CooksModel(
       {this.orderListCode,
@@ -24,6 +26,7 @@ class CooksModel {
       this.orderListTableFk,
       this.orderListBranchFk,
       this.orderListQ,
+      this.orderListDateTime,
       this.productPathApi,
       this.fullName,
       this.fullName1,
@@ -36,7 +39,8 @@ class CooksModel {
       this.usersName,
       this.orderListStatusCook,
       this.orderListNoteRemark,
-      this.proDetailCookingStatus});
+      this.proDetailCookingStatus,
+      this.tableName});
 
   CooksModel.fromJson(Map<String, dynamic> json) {
     orderListCode = json['order_list_code'];
@@ -44,6 +48,7 @@ class CooksModel {
     orderListTableFk = json['order_list_table_fk'];
     orderListBranchFk = json['order_list_branch_fk'];
     orderListQ = json['order_list_q'];
+    orderListDateTime = json['order_list_date_time'];
     productPathApi = json['product_path_api'];
     fullName = json['full_name'];
     fullName1 = json['full_name1'];
@@ -57,6 +62,7 @@ class CooksModel {
     orderListStatusCook = json['order_list_status_cook'];
     orderListNoteRemark = json['order_list_note_remark'];
     proDetailCookingStatus = json['pro_detail_cooking_status'];
+    tableName = json['table_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -66,6 +72,7 @@ class CooksModel {
     data['order_list_table_fk'] = this.orderListTableFk;
     data['order_list_branch_fk'] = this.orderListBranchFk;
     data['order_list_q'] = this.orderListQ;
+    data['order_list_date_time'] = this.orderListDateTime;
     data['product_path_api'] = this.productPathApi;
     data['full_name'] = this.fullName;
     data['full_name1'] = this.fullName1;
@@ -79,6 +86,7 @@ class CooksModel {
     data['order_list_status_cook'] = this.orderListStatusCook;
     data['order_list_note_remark'] = this.orderListNoteRemark;
     data['pro_detail_cooking_status'] = this.proDetailCookingStatus;
+    data['table_name'] = this.tableName;
     return data;
   }
 }

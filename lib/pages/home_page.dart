@@ -24,16 +24,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).size.width >= 600 &&
-        MediaQuery.of(context).size.width < 840) {
-      _crossAxisCount = 3; // For tablets
-    }
-    if (MediaQuery.of(context).size.width >= 840 &&
-        MediaQuery.of(context).size.width < 1200) {
-      _crossAxisCount = 4; // For larger tablets
-    }
-    if (MediaQuery.of(context).size.width >= 1200) {
-      _crossAxisCount = 5; // For larger screens (Android tablets, desktops)
+    final maxWidth1 = MediaQuery.of(context).size.width;
+    int crossAxisCount1;
+
+    if (maxWidth1 >= 1200) {
+      crossAxisCount1 = 10;
+      // print("result5");
+    } else if (maxWidth1 >= 840) {
+      crossAxisCount1 = 8;
+      // print("result4");
+    } else if (maxWidth1 >= 600) {
+      crossAxisCount1 = 5;
+      // print("result3");
+    } else {
+      crossAxisCount1 = 3;
     }
 
     final providerService = Provider.of<ProviderService>(context);
@@ -143,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                 child: tableList.isNotEmpty
                     ? GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: _crossAxisCount,
+                          crossAxisCount: crossAxisCount1,
                           crossAxisSpacing: 5,
                           mainAxisSpacing: 5,
                           childAspectRatio: 1,

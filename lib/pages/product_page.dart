@@ -89,6 +89,34 @@ class _ProductListState extends State<ProductList> {
     final categoryList = providerService.categoryList;
     final productList = providerService.productList;
 
+    final maxWidth1 = MediaQuery.of(context).size.width;
+    double maxHeight1;
+
+    int crossAxisCount1;
+    int page;
+
+    if (maxWidth1 >= 1200) {
+      crossAxisCount1 = 12;
+      maxHeight1 = 100;
+      page = 12;
+      // print("result5");
+    } else if (maxWidth1 >= 840) {
+      crossAxisCount1 = 4;
+      maxHeight1 = 210;
+      page = 11;
+      // print("result4");
+    } else if (maxWidth1 >= 600) {
+      crossAxisCount1 = 9;
+      maxHeight1 = 90;
+      page = 9;
+      // print("result3");
+    } else {
+      crossAxisCount1 = 4;
+      // print("result2");
+      maxHeight1 = 172;
+      page = 8;
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -131,12 +159,13 @@ class _ProductListState extends State<ProductList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 165,
+              // height: 170,
+              height: maxHeight1,
               child: PageView.builder(
-                itemCount: (categoryList.length / 8).ceil(),
+                itemCount: (categoryList.length / page).ceil(),
                 itemBuilder: (context, pageIndex) {
-                  final startIndex = pageIndex * 8;
-                  final endIndex = startIndex + 8;
+                  final startIndex = pageIndex * page;
+                  final endIndex = startIndex + page;
                   final sublist = categoryList.sublist(
                     startIndex,
                     endIndex < categoryList.length
@@ -145,9 +174,8 @@ class _ProductListState extends State<ProductList> {
                   );
 
                   return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount1,
                       crossAxisSpacing: 0,
                       mainAxisSpacing: 0,
                       childAspectRatio: 1.1,
@@ -231,16 +259,26 @@ class _ProductListState extends State<ProductList> {
                     ? LayoutBuilder(
                         builder: (context, constraints) {
                           final maxWidth = constraints.maxWidth;
+                          double maxHeight;
 
                           int crossAxisCount;
+
                           if (maxWidth >= 1200) {
                             crossAxisCount = 5;
+                            maxHeight = 260;
+                            // print("result5");
                           } else if (maxWidth >= 840) {
                             crossAxisCount = 4;
+                            maxHeight = 210;
+                            // print("result4");
                           } else if (maxWidth >= 600) {
                             crossAxisCount = 3;
+                            maxHeight = 270;
+                            // print("result3");
                           } else {
                             crossAxisCount = 2;
+                            // print("result2");
+                            maxHeight = 170;
                           }
 
                           return GridView.builder(
@@ -288,7 +326,7 @@ class _ProductListState extends State<ProductList> {
                                       Stack(
                                         children: [
                                           Container(
-                                            height: 170,
+                                            height: maxHeight,
                                             decoration: BoxDecoration(
                                               image: DecorationImage(
                                                 image: NetworkImage(item
@@ -323,6 +361,30 @@ class _ProductListState extends State<ProductList> {
                                                 ),
                                               ),
                                             ),
+                                          // Positioned(
+                                          //   bottom: 8,
+                                          //   left: 8,
+                                          //   child: Container(
+                                          //     padding:
+                                          //         const EdgeInsets.symmetric(
+                                          //             horizontal: 12,
+                                          //             vertical: 6),
+                                          //     decoration: BoxDecoration(
+                                          //       color: Colors.black
+                                          //           .withOpacity(0.4),
+                                          //       borderRadius:
+                                          //           BorderRadius.circular(8),
+                                          //     ),
+                                          //     child: Text(
+                                          //       'fff',
+                                          //       style: const TextStyle(
+                                          //         color: Colors.white,
+                                          //         fontSize: 16,
+                                          //         fontWeight: FontWeight.bold,
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
                                         ],
                                       ),
                                       Padding(
