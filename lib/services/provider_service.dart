@@ -410,8 +410,6 @@ class ProviderService extends ChangeNotifier {
   }
 
   Future<bool> getConfirm(List<String> orderListCodes, status) async {
-    EasyLoading.show(status: 'ກໍາລັງໂຫຼດ...');
-
     final isSuccess = await APIService().confirmOrder(orderListCodes, status);
 
     if (isSuccess) {
@@ -439,7 +437,28 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  Future<bool> getApiConfirmCooking(
+    int orderStatus,
+    String listCode,
+  ) async {
+    EasyLoading.show(status: 'ກໍາລັງໂຫຼດ...');
+    final isSuccess = await APIService().apiConfirmCooking(
+      orderStatus,
+      listCode,
+    );
+    if (isSuccess == true) {
+      EasyLoading.dismiss();
+      getCookPageApi(2);
+      notifyListeners();
+      return true;
+    } else {
+      EasyLoading.dismiss();
+      return false;
+    }
+  }
+
   getPullRefresh() {
+    selectedIndex = 0;
     getZone();
     getTable();
     getCategory(0);

@@ -387,4 +387,23 @@ class APIService {
           'Failed to fetch Cook cart, status code: ${response.statusCode}');
     }
   }
+
+  Future<bool> apiConfirmCooking(int orderStatus, String listCode) async {
+    final response = await http.post(
+      Uri.parse('http://api-azor.plc.la/order_status'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "order_list_status_order": orderStatus.toString(),
+        "order_list_code": listCode
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception('Failed to update order status: ${response.statusCode}');
+    }
+  }
 }

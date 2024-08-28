@@ -58,6 +58,7 @@ class _CartPage1State extends State<CartPage1> {
   }
 
   Future<void> _fetchCartData(ProviderService providerService) async {
+    if (!mounted) return; // Check if the widget is still mounted
     setState(() {
       _isLoading = true;
     });
@@ -68,15 +69,19 @@ class _CartPage1State extends State<CartPage1> {
     } catch (e) {
       print('Error fetching cart data: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        // Check again before calling setState
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _refreshCart() async {
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
+    if (!mounted) return; // Check if the widget is still mounted
     setState(() {
       _isLoading = true;
     });
@@ -87,9 +92,12 @@ class _CartPage1State extends State<CartPage1> {
     } catch (e) {
       print('Error refreshing cart: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        // Check again before calling setState
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -104,7 +112,7 @@ class _CartPage1State extends State<CartPage1> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: const Text(
-          "ກະຕ໋າຂອງຂ້ອຍ",
+          "ຢືນຢັນອໍເດີ",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -254,19 +262,46 @@ class _CartPage1State extends State<CartPage1> {
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.only(right: 8),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: FadeInImage(
-                                        width: 100,
-                                        height: 110,
-                                        placeholder: const AssetImage(
-                                          "assets/images/loading_plaholder.gif",
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: FadeInImage(
+                                            width: 100,
+                                            height: 110,
+                                            placeholder: const AssetImage(
+                                              "assets/images/loading_plaholder.gif",
+                                            ),
+                                            image: NetworkImage(
+                                              item.productPathApi ?? '',
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                        image: NetworkImage(
-                                          item.productPathApi ?? '',
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: Container(
+                                            margin: const EdgeInsets.all(8),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4, vertical: 6),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black.withOpacity(0.4),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              'ຄິວ ${item.orderListQ}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        fit: BoxFit.cover,
-                                      ),
+                                      ],
                                     ),
                                   ),
                                   Expanded(
@@ -289,9 +324,9 @@ class _CartPage1State extends State<CartPage1> {
                                           children: [
                                             Container(
                                               width: 60,
-                                              child: Text(
+                                              child: const Text(
                                                 "ໝາຍເຫດ:",
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w500,
                                                   color: Colors.black45,
@@ -525,7 +560,7 @@ class _CartPage1State extends State<CartPage1> {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: const Column(
                             children: [
-                              Icon(Icons.shopping_cart_rounded, size: 70),
+                              Icon(Icons.shopping_cart_outlined, size: 70),
                               Text("( ບໍ່ມີລາຍການ )")
                             ],
                           ),

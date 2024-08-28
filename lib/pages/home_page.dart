@@ -6,6 +6,7 @@ import 'package:azor/shared/myData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,13 +16,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  IO.Socket? socket;
+
   @override
   void initState() {
     super.initState();
+
+    // socket = IO.io('http://api-azor.plc.la:8091', <String, dynamic>{
+    //   'transports': ['websocket'],
+    //   'autoConnect': false,
+    // });
+
+    // socket?.connect();
+
+    // socket?.onConnect((_) {
+    //   print('connected');
+    // });
+
+    // socket?.onDisconnect((_) {
+    //   print('disconnected');
+    // });
+
+    // socket?.onError((error) {
+    //   print('Socket error: $error');
+    // });
+
+    // // Listen for 'EmitCookConfirm' event
+    // socket?.on('EmitCookConfirm', (data) {
+    //   if (mounted) {
+    //     print('EmitCookConfirm event received: $data');
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text(data['message'])),
+    //     );
+    //   }
+    // });
+
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
     providerService.getZone();
     providerService.getTable();
+  }
+
+  @override
+  void dispose() {
+    socket?.dispose();
+    super.dispose();
   }
 
   @override
@@ -69,9 +108,7 @@ class _HomePageState extends State<HomePage> {
                 desc: 'ກົດ "ຕົກລົງ" ເພື່ອອອກຈາກລະບົບ?',
                 btnCancelText: 'ປິດໜ້າຕ່າງ',
                 btnOkText: 'ຕົກລົງ',
-                btnCancelOnPress: () {
-                  // Do nothing, just close the dialog
-                },
+                btnCancelOnPress: () {},
                 btnOkOnPress: () async {
                   await providerService.logout();
                   exit(0);

@@ -2,21 +2,18 @@ class ProductGetid {
   String? productId;
   String? productName;
   String? productPathApi;
-  String? priceSetSPrice;
   List<ProductArray>? productArray;
 
   ProductGetid(
       {this.productId,
       this.productName,
       this.productPathApi,
-      this.priceSetSPrice,
       this.productArray});
 
   ProductGetid.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
     productName = json['product_name'];
     productPathApi = json['product_path_api'];
-    priceSetSPrice = json['price_set_s_price'];
     if (json['product_array'] != null) {
       productArray = <ProductArray>[];
       json['product_array'].forEach((v) {
@@ -30,7 +27,6 @@ class ProductGetid {
     data['product_id'] = this.productId;
     data['product_name'] = this.productName;
     data['product_path_api'] = this.productPathApi;
-    data['price_set_s_price'] = this.priceSetSPrice;
     if (this.productArray != null) {
       data['product_array'] =
           this.productArray!.map((v) => v.toJson()).toList();
@@ -46,8 +42,6 @@ class ProductArray {
   int? proDetailGift;
   String? productCutStock;
   int? proDetailQty;
-  String? sizeQty;
-  List<ProductSubArray>? productSubArray;
 
   ProductArray(
       {this.proDetailCode,
@@ -55,9 +49,7 @@ class ProductArray {
       this.sPrice,
       this.proDetailGift,
       this.productCutStock,
-      this.proDetailQty,
-      this.sizeQty,
-      this.productSubArray});
+      this.proDetailQty});
 
   ProductArray.fromJson(Map<String, dynamic> json) {
     proDetailCode = json['pro_detail_code'];
@@ -66,13 +58,6 @@ class ProductArray {
     proDetailGift = json['pro_detail_gift'];
     productCutStock = json['product_cut_stock'];
     proDetailQty = json['pro_detail_qty'];
-    sizeQty = json['size_qty'];
-    if (json['product_sub_array'] != null) {
-      productSubArray = <ProductSubArray>[];
-      json['product_sub_array'].forEach((v) {
-        productSubArray!.add(new ProductSubArray.fromJson(v));
-      });
-    }
   }
 
   Map<String, dynamic> toJson() {
@@ -83,30 +68,6 @@ class ProductArray {
     data['pro_detail_gift'] = this.proDetailGift;
     data['product_cut_stock'] = this.productCutStock;
     data['pro_detail_qty'] = this.proDetailQty;
-    data['size_qty'] = this.sizeQty;
-    if (this.productSubArray != null) {
-      data['product_sub_array'] =
-          this.productSubArray!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class ProductSubArray {
-  String? toppingId;
-  String? toppingName;
-
-  ProductSubArray({this.toppingId, this.toppingName});
-
-  ProductSubArray.fromJson(Map<String, dynamic> json) {
-    toppingId = json['topping_id'];
-    toppingName = json['topping_name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['topping_id'] = this.toppingId;
-    data['topping_name'] = this.toppingName;
     return data;
   }
 }

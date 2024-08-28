@@ -6,6 +6,7 @@ import 'package:azor/services/provider_service.dart';
 import 'package:azor/shared/myData.dart';
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -53,7 +54,6 @@ class _CookPageState extends State<CookPage> {
           }
         });
 
-        // Check if the message is a comma-separated string and if it contains MyData.cookStatus
         if (data['message'] is String) {
           final String messageString = data['message'] as String;
           final List<String> messageList =
@@ -63,7 +63,6 @@ class _CookPageState extends State<CookPage> {
             _showOrderConfirmationSnackbar("ອໍເດີເຂົ້າໃຫມ່");
           }
         } else if (data['message'] == MyData.cookStatus) {
-          // Check if the message is a single string that matches MyData.cookStatus
           _playNotificationSound();
           _showOrderConfirmationSnackbar("ອໍເດີເຂົ້າໃຫມ່");
         }
@@ -206,16 +205,16 @@ class _CookPageState extends State<CookPage> {
                           int crossAxisCount;
                           if (maxWidth >= 1200) {
                             crossAxisCount = 4;
-                            maxHeight = 12;
+                            maxHeight = 9;
                           } else if (maxWidth >= 840) {
                             crossAxisCount = 3;
-                            maxHeight = 13;
+                            maxHeight = 11;
                           } else if (maxWidth >= 600) {
                             crossAxisCount = 2;
-                            maxHeight = 13;
+                            maxHeight = 11;
                           } else {
                             crossAxisCount = 1;
-                            maxHeight = 13;
+                            maxHeight = 11;
                           }
 
                           return GridView.builder(
@@ -270,7 +269,7 @@ class _CookPageState extends State<CookPage> {
                                                   ),
                                                 ),
                                                 Align(
-                                                  alignment: Alignment.topRight,
+                                                  alignment: Alignment.topLeft,
                                                   child: Container(
                                                     margin:
                                                         const EdgeInsets.all(8),
@@ -293,6 +292,70 @@ class _CookPageState extends State<CookPage> {
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      AwesomeDialog(
+                                                        context: context,
+                                                        dialogType:
+                                                            DialogType.warning,
+                                                        animType:
+                                                            AnimType.topSlide,
+                                                        title: 'ແຈ້ງເຕືອນ',
+                                                        desc:
+                                                            'ທ່ານຕ້ອງການຍົກເລີກລາຍການນີ້ແທ້ ຫຼື ບໍ່?',
+                                                        btnCancelText:
+                                                            'ປິດໜ້າຕ່າງ',
+                                                        btnOkText: 'ຕົກລົງ',
+                                                        btnCancelOnPress: () {},
+                                                        btnOkOnPress: () async {
+                                                          EasyLoading.show(
+                                                              status:
+                                                                  'Deleting...');
+                                                          providerService
+                                                              .getDeleteSccessCart(
+                                                                  item.orderListCode ??
+                                                                      '',
+                                                                  item.orderListTableFk
+                                                                      .toString(),
+                                                                  '2')
+                                                              .then((_) {
+                                                            providerService
+                                                                .getPullRefresh();
+                                                            EasyLoading
+                                                                .dismiss();
+                                                          }).catchError((e) {
+                                                            print(
+                                                                'Error deleting: $e');
+                                                            EasyLoading
+                                                                .dismiss();
+                                                          });
+                                                        },
+                                                      ).show();
+                                                    },
+                                                    child: Container(
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                              8),
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 4,
+                                                          vertical: 6),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.redAccent
+                                                            .withOpacity(0.4),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.delete_outlined,
+                                                        color: Colors.white,
                                                       ),
                                                     ),
                                                   ),
@@ -320,6 +383,56 @@ class _CookPageState extends State<CookPage> {
                                                         TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 15),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .check_box_outlined,
+                                                            size: 20,
+                                                          ),
+                                                          SizedBox(width: 4),
+                                                          Text(
+                                                            "ຈໍານວນ",
+                                                            style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const SizedBox(
+                                                              width: 4),
+                                                          Text(
+                                                            "x ${item.orderListQty}",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 20,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.right,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 4),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -474,8 +587,38 @@ class _CookPageState extends State<CookPage> {
                                           ),
                                           Expanded(
                                             child: ElevatedButton(
-                                              onPressed:
-                                                  index == 0 ? () {} : null,
+                                              onPressed: index == 0
+                                                  ? () async {
+                                                      final isSuccess =
+                                                          await providerService
+                                                              .getApiConfirmCooking(
+                                                        3,
+                                                        item.orderListCode
+                                                            .toString(),
+                                                      );
+
+                                                      if (isSuccess) {
+                                                        socket?.emit(
+                                                            'cookConfirm', {
+                                                          'branchCode':
+                                                              MyData.branchCode,
+                                                        });
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          const SnackBar(
+                                                            content: Text(
+                                                              'ຮັບອໍເດີສໍາເລັດແລ້ວ',
+                                                            ),
+                                                            backgroundColor:
+                                                                Colors.blue,
+                                                            duration: Duration(
+                                                                seconds: 2),
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+                                                  : null,
                                               style: ElevatedButton.styleFrom(
                                                 padding:
                                                     const EdgeInsets.symmetric(
@@ -499,7 +642,7 @@ class _CookPageState extends State<CookPage> {
                                                   ),
                                                   const SizedBox(width: 8),
                                                   Text(
-                                                    'ຢືນຢັນອໍເດີ',
+                                                    'ເລີ່ມເຮັດ',
                                                     style: TextStyle(
                                                       fontSize: 16,
                                                       color: index == 0
@@ -531,10 +674,10 @@ class _CookPageState extends State<CookPage> {
                               child: const Column(
                                 children: [
                                   Icon(
-                                    Icons.search_off,
+                                    Icons.shopping_cart,
                                     size: 70,
                                   ),
-                                  Text("( ບໍ່ມີຂໍ້ມູນ )")
+                                  Text("( ຍັງບໍ່ມີລາຍການ )")
                                 ],
                               ),
                             ),

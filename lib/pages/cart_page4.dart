@@ -5,14 +5,14 @@ import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CartPage3 extends StatefulWidget {
-  const CartPage3({super.key});
+class CartPage4 extends StatefulWidget {
+  const CartPage4({super.key});
 
   @override
-  State<CartPage3> createState() => _CartPage3State();
+  State<CartPage4> createState() => _CartPage4State();
 }
 
-class _CartPage3State extends State<CartPage3> {
+class _CartPage4State extends State<CartPage4> {
   double bottomSize = 120;
   String tableID = "";
   bool isLoading = true;
@@ -60,7 +60,7 @@ class _CartPage3State extends State<CartPage3> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: const Text(
-          "ພ້ອມເສີບ",
+          "ສໍາເລັດແລ້ວ",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
