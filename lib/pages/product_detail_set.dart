@@ -21,7 +21,7 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
   String tableCode = '';
   FocusNode textlFocusNode = FocusNode();
   TextEditingController textlController = TextEditingController();
-  int selectedCount = 0; // Track the number of selected checkboxes
+  int selectedCount = 0;
 
   List<bool> expandedStates = [];
 
@@ -67,9 +67,8 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
                 expandedStates =
                     List<bool>.filled(item.productArray?.length ?? 0, false);
 
-                // Example: Expand the first item by default
                 if (item.productArray!.isNotEmpty) expandedStates[0] = true;
-                selectedCount = 0; // Reset selected count
+                selectedCount = 0;
               }
 
               return Stack(
@@ -392,15 +391,12 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
                                   i++) {
                                 final detail = item.productArray![i];
 
-                                // Check if productSubArray is not null
                                 if (detail.productSubArray != null) {
                                   for (int j = 0;
                                       j < (detail.productSubArray?.length ?? 0);
                                       j++) {
-                                    // Ensure that checkboxStates[j] exists
                                     if (j < checkboxStates.length &&
                                         checkboxStates[j]) {
-                                      // Safely access toppingId
                                       final toppingId =
                                           detail.productSubArray![j].toppingId;
                                       final topname = detail
@@ -421,7 +417,7 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
                               final quantity = int.parse(
                                   providerService.quantity.toString());
                               int gift = 0;
-                              String status_stock = "off";
+                              String statusStock = "off";
 
                               int selectedCount = checkboxStates
                                   .where((checked) => checked)
@@ -444,7 +440,7 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
                                           sPrice,
                                           quantity,
                                           gift,
-                                          status_stock,
+                                          statusStock,
                                           selectedDetails1.toString(),
                                           MyData.usersID,
                                           selectedDetails.toString(),
