@@ -67,7 +67,7 @@ class _TapCartPageState extends State<TapCartPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.looks_4_outlined),
-            label: 'ສໍາເລັດ',
+            label: 'ອໍເດີຂອງຂ້ອຍ',
           ),
         ],
       ),

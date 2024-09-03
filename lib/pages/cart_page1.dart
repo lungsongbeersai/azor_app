@@ -451,7 +451,7 @@ class _CartPage1State extends State<CartPage1> {
                                                                 1) {
                                                           EasyLoading.show(
                                                               status:
-                                                                  'Updating...');
+                                                                  'ກໍາລັງປະມວນຜົນ...');
                                                           providerService
                                                               .getupdateCart(
                                                                   item.orderListCode ??
@@ -467,7 +467,7 @@ class _CartPage1State extends State<CartPage1> {
                                                           }).catchError((e) {
                                                             // Handle exceptions if needed
                                                             print(
-                                                                'Error updating cart item: $e');
+                                                                'Error ກໍາລັງປະມວນຜົນ cart item: $e');
                                                             EasyLoading
                                                                 .dismiss();
                                                           });
@@ -508,7 +508,7 @@ class _CartPage1State extends State<CartPage1> {
                                                       onPressed: () {
                                                         EasyLoading.show(
                                                             status:
-                                                                'Updating...');
+                                                                'ກໍາລັງປະມວນຜົນ...');
                                                         providerService
                                                             .getupdateCart(
                                                                 item.orderListCode ??
@@ -523,7 +523,7 @@ class _CartPage1State extends State<CartPage1> {
                                                         }).catchError((e) {
                                                           // Handle exceptions if needed
                                                           print(
-                                                              'Error updating cart item: $e');
+                                                              'Error ກໍາລັງປະມວນຜົນ cart item: $e');
                                                           EasyLoading.dismiss();
                                                         });
                                                       },

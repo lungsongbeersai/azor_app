@@ -149,7 +149,7 @@ class _CookPageState extends State<CookPage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "${MyData.cookName.toString()} ",
+          "ອໍເດີໃໝ່ ( ${MyData.cookName.toString()} )",
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class _CookPageState extends State<CookPage> {
                 onRefresh: () async {
                   await Future.delayed(const Duration(seconds: 2));
                   setState(() {
-                    providerService.getPullRefresh();
+                    providerService.getCookPageApi(2);
                   });
                 },
                 child: cookList.isNotEmpty
@@ -308,7 +308,7 @@ class _CookPageState extends State<CookPage> {
                                                             AnimType.topSlide,
                                                         title: 'ແຈ້ງເຕືອນ',
                                                         desc:
-                                                            'ທ່ານຕ້ອງການຍົກເລີກລາຍການນີ້ແທ້ ຫຼື ບໍ່?',
+                                                            'ກົດ "ຕົກລົງ" ເພື່ອຍົກເລີກລາຍການນີ້?',
                                                         btnCancelText:
                                                             'ປິດໜ້າຕ່າງ',
                                                         btnOkText: 'ຕົກລົງ',
@@ -392,7 +392,7 @@ class _CookPageState extends State<CookPage> {
                                                         children: [
                                                           Icon(
                                                             Icons
-                                                                .check_box_outlined,
+                                                                .wifi_protected_setup_outlined,
                                                             size: 20,
                                                           ),
                                                           SizedBox(width: 4),
@@ -587,38 +587,33 @@ class _CookPageState extends State<CookPage> {
                                           ),
                                           Expanded(
                                             child: ElevatedButton(
-                                              onPressed: index == 0
-                                                  ? () async {
-                                                      final isSuccess =
-                                                          await providerService
-                                                              .getApiConfirmCooking(
-                                                        3,
-                                                        item.orderListCode
-                                                            .toString(),
-                                                      );
+                                              onPressed: () async {
+                                                final isSuccess =
+                                                    await providerService
+                                                        .getApiConfirmCooking(
+                                                  3,
+                                                  item.orderListCode.toString(),
+                                                );
 
-                                                      if (isSuccess) {
-                                                        socket?.emit(
-                                                            'cookConfirm', {
-                                                          'branchCode':
-                                                              MyData.branchCode,
-                                                        });
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          const SnackBar(
-                                                            content: Text(
-                                                              'ຮັບອໍເດີສໍາເລັດແລ້ວ',
-                                                            ),
-                                                            backgroundColor:
-                                                                Colors.blue,
-                                                            duration: Duration(
-                                                                seconds: 2),
-                                                          ),
-                                                        );
-                                                      }
-                                                    }
-                                                  : null,
+                                                if (isSuccess) {
+                                                  socket?.emit('cookConfirm', {
+                                                    'branchCode':
+                                                        MyData.branchCode,
+                                                  });
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                        'ຮັບອໍເດີສໍາເລັດແລ້ວ',
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.blue,
+                                                      duration:
+                                                          Duration(seconds: 2),
+                                                    ),
+                                                  );
+                                                }
+                                              },
                                               style: ElevatedButton.styleFrom(
                                                 padding:
                                                     const EdgeInsets.symmetric(
@@ -630,24 +625,20 @@ class _CookPageState extends State<CookPage> {
                                                       BorderRadius.circular(0),
                                                 ),
                                               ),
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Icon(
                                                     Icons.check,
-                                                    color: index == 0
-                                                        ? Colors.white
-                                                        : Colors.black12,
+                                                    color: Colors.white,
                                                   ),
                                                   const SizedBox(width: 8),
                                                   Text(
                                                     'ເລີ່ມເຮັດ',
                                                     style: TextStyle(
                                                       fontSize: 16,
-                                                      color: index == 0
-                                                          ? Colors.white
-                                                          : Colors.black12,
+                                                      color: Colors.white,
                                                     ),
                                                   ),
                                                 ],

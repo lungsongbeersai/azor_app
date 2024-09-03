@@ -145,7 +145,11 @@ class _ProductListState extends State<ProductList> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, "search");
+              Navigator.pushNamed(
+                context,
+                "search",
+                arguments: ' ${tableCode.toString()} ',
+              );
             },
             icon: const ClipOval(
               child: Icon(Icons.search, color: Colors.white),
@@ -304,12 +308,21 @@ class _ProductListState extends State<ProductList> {
                               final item = productList[index];
                               return GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    "product_detail",
-                                    arguments:
-                                        '${item.productId},${tableCode.toString()}',
-                                  );
+                                  if (item.productSet == "on") {
+                                    Navigator.pushNamed(
+                                      context,
+                                      "product_detail_set",
+                                      arguments:
+                                          '${item.productId},${tableCode.toString()}',
+                                    );
+                                  } else {
+                                    Navigator.pushNamed(
+                                      context,
+                                      "product_detail_no_set",
+                                      arguments:
+                                          '${item.productId},${tableCode.toString()}',
+                                    );
+                                  }
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

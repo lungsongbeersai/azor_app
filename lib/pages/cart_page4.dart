@@ -30,8 +30,8 @@ class _CartPage4State extends State<CartPage4> {
       }
       final providerService =
           Provider.of<ProviderService>(context, listen: false);
-      await providerService.getCart3(tableID);
-      await providerService.getCartList3(tableID);
+      await providerService.getCart4(tableID);
+      await providerService.getCartList4(tableID);
       setState(() {
         isLoading = false;
       });
@@ -44,8 +44,8 @@ class _CartPage4State extends State<CartPage4> {
     });
     final providerService =
         Provider.of<ProviderService>(context, listen: false);
-    await providerService.getCart3(tableID);
-    await providerService.getCartList3(tableID);
+    await providerService.getCart4(tableID);
+    await providerService.getCartList4(tableID);
     setState(() {
       isLoading = false;
     });
@@ -54,7 +54,7 @@ class _CartPage4State extends State<CartPage4> {
   @override
   Widget build(BuildContext context) {
     final providerService = Provider.of<ProviderService>(context);
-    final carts = providerService.cartList3;
+    final carts = providerService.cartList4;
 
     return Scaffold(
       appBar: AppBar(
@@ -326,7 +326,7 @@ class _CartPage4State extends State<CartPage4> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    "${MyData.formatnumber(providerService.cartNetTotal3)}₭",
+                    "${MyData.formatnumber(providerService.cartNetTotal4)}₭",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

@@ -1,9 +1,10 @@
 import 'package:azor/pages/bar_page.dart';
 import 'package:azor/pages/cart_page1.dart';
 import 'package:azor/pages/cart_page3.dart';
+import 'package:azor/pages/product_detail_no_set.dart';
 import 'package:azor/pages/tap_cart_page.dart';
 import 'package:azor/pages/login_page.dart';
-import 'package:azor/pages/product_detail_page.dart';
+import 'package:azor/pages/product_detail_set.dart';
 import 'package:azor/pages/product_page.dart';
 import 'package:azor/pages/search_page.dart';
 import 'package:azor/pages/tab_page.dart';
@@ -47,7 +48,8 @@ class MyApp extends StatelessWidget {
           "tap": (_) => const TapPage(),
           "table_id": (_) => const ProductList(),
           "search": (_) => const SearchPage(),
-          "product_detail": (_) => const ProductDetail(),
+          "product_detail_no_set": (_) => const ProductDetailNoset(),
+          "product_detail_set": (_) => const ProductDetailSet(),
           "tap_cart": (_) => const TapCartPage(),
           "cart1": (_) => const CartPage1(),
           "cart2": (_) => const CartPage2(),

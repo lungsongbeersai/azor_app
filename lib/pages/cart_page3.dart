@@ -252,7 +252,7 @@ class _CartPage3State extends State<CartPage3> {
                                                   height: 32,
                                                   child: GestureDetector(
                                                     child: Image.asset(
-                                                      'assets/images/free-check.png',
+                                                      'assets/images/cook_loading.gif',
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),

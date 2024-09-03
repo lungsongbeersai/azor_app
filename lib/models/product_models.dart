@@ -4,13 +4,15 @@ class ProductListModel {
   String? productName;
   String? productCateFk;
   String? productDiscount;
+  String? productSet;
 
   ProductListModel(
       {this.productPathApi,
       this.productId,
       this.productName,
       this.productCateFk,
-      this.productDiscount});
+      this.productDiscount,
+      this.productSet});
 
   ProductListModel.fromJson(Map<String, dynamic> json) {
     productPathApi = json['product_path_api'];
@@ -18,6 +20,7 @@ class ProductListModel {
     productName = json['product_name'];
     productCateFk = json['product_cate_fk'];
     productDiscount = json['product_discount'];
+    productSet = json['product_set'];
   }
 
   Map<String, dynamic> toJson() {
@@ -27,6 +30,7 @@ class ProductListModel {
     data['product_name'] = this.productName;
     data['product_cate_fk'] = this.productCateFk;
     data['product_discount'] = this.productDiscount;
+    data['product_set'] = this.productSet;
     return data;
   }
 }

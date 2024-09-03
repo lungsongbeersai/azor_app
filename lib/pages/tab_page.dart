@@ -50,9 +50,9 @@ class _TapPageState extends State<TapPage> {
                 curveSize: 80,
                 top: -30,
                 items: const [
-                  TabItem(icon: Icons.notifications, title: 'ແຈ້ງເຕືອນ'),
+                  TabItem(icon: Icons.notifications, title: 'ແຈ້ງເສີບ'),
                   TabItem(icon: Icons.home_filled, title: 'ໜ້າຫຼັກ'),
-                  TabItem(icon: Icons.shopping_cart, title: 'ກະຕ໋າ'),
+                  TabItem(icon: Icons.shopping_cart, title: 'ຕິດຕາມອໍເດີ'),
                 ],
                 onTap: (int i) {
                   providerService.pageselected = i;

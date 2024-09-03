@@ -2,8 +2,10 @@ import 'package:azor/models/cart_models.dart';
 import 'package:azor/models/category_models.dart';
 import 'package:azor/models/cook_models.dart';
 import 'package:azor/models/login_models.dart';
+import 'package:azor/models/product_getID_set.dart';
 import 'package:azor/models/product_getid_models.dart';
 import 'package:azor/models/product_models.dart';
+import 'package:azor/models/product_search_page.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
 import 'package:azor/services/api_service.dart';
@@ -21,7 +23,11 @@ class ProviderService extends ChangeNotifier {
   List<CartModels> cartList = [];
   List<CartModels> cartList2 = [];
   List<CartModels> cartList3 = [];
+  List<CartModels> cartList4 = [];
   List<CooksModel> cookList = [];
+  List<CooksModel> cookList3 = [];
+  List<CooksModel> cookList4 = [];
+  List<ProductSearch> proName = [];
 
   int cartNetTotal = 0;
   int cartQty = 0;
@@ -29,6 +35,9 @@ class ProviderService extends ChangeNotifier {
   int cartQty2 = 0;
   int cartNetTotal3 = 0;
   int cartQty3 = 0;
+  int cartNetTotal4 = 0;
+  int cartQty4 = 0;
+
   int itemCount = 0;
   int _quantity = 1;
   String _selectedSize = '';
@@ -220,11 +229,45 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  // getProductSearch(String name) async {
+  //   try {
+  //     proName = await APIService().productSearch(
+  //       MyData.branchCode,
+  //       name.toString(),
+  //     );
+  //     EasyLoading.dismiss();
+  //     notifyListeners();
+  //   } catch (e) {
+  //     EasyLoading.dismiss();
+  //     print('Error fetching get Product: $e');
+  //   }
+  // }
+
+  clearProductList() {
+    proName = [];
+    notifyListeners();
+  }
+
+  getProductSearch(String name) async {
+    try {
+      proName = await APIService().productSearch(
+        MyData.branchCode,
+        name.toString(),
+      );
+      EasyLoading.dismiss();
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching products: $e');
+      // Optionally, notify listeners about the error state
+    }
+  }
+
   getProduct(String cateid, String status, int itemActive) async {
     selectedIndex = itemActive;
     try {
       productList = await APIService().productApi(
         cateid.toString(),
+        MyData.branchCode,
         status.toString(),
         itemActive.toString(),
       );
@@ -246,6 +289,16 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  Future<List<ProductGetidSet>> getProductIDSet(String proid) async {
+    try {
+      final List<ProductGetidSet> products =
+          await APIService().productGetIDSet(proid);
+      return products;
+    } catch (e) {
+      throw Exception('Failed to load product details: $e');
+    }
+  }
+
   Future<bool> addCart(
       String billtable,
       String branchCode,
@@ -255,17 +308,22 @@ class ProviderService extends ChangeNotifier {
       int orderlistpercented,
       String statuscook,
       String remark,
-      String userID) async {
+      String userID,
+      String orderToppingList,
+      String status) async {
     final isSuccess = await APIService().addCart(
-        billtable,
-        branchCode,
-        orderlistprocodefk,
-        orderlistprice,
-        orderlistqty,
-        orderlistpercented,
-        statuscook,
-        remark,
-        userID);
+      billtable,
+      branchCode,
+      orderlistprocodefk,
+      orderlistprice,
+      orderlistqty,
+      orderlistpercented,
+      statuscook,
+      remark,
+      userID,
+      orderToppingList,
+      status,
+    );
     if (isSuccess == true) {
       EasyLoading.dismiss();
       resetQuantity();
@@ -300,6 +358,15 @@ class ProviderService extends ChangeNotifier {
   getCart3(String tableID) async {
     try {
       cartList3 = await APIService().cartApi3(tableID, MyData.branchCode, 3);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching Cart: $e');
+    }
+  }
+
+  getCart4(String tableID) async {
+    try {
+      cartList4 = await APIService().cartApi4(tableID, MyData.branchCode, 4);
       notifyListeners();
     } catch (e) {
       print('Error fetching Cart: $e');
@@ -352,6 +419,22 @@ class ProviderService extends ChangeNotifier {
       final item = cartList3[i];
       cartQty3 += int.parse(item.orderListQty.toString());
       cartNetTotal3 += int.parse(item.orderListTotal.toString());
+    }
+    notifyListeners();
+  }
+
+  getCartList4(String tableID) async {
+    cartList4 = await APIService().cartApi4(
+      tableID,
+      MyData.branchCode,
+      4,
+    );
+    cartNetTotal4 = 0;
+    cartQty4 = 0;
+    for (int i = 0; i < cartList4.length; i++) {
+      final item = cartList4[i];
+      cartQty4 += int.parse(item.orderListQty.toString());
+      cartNetTotal4 += int.parse(item.orderListTotal.toString());
     }
     notifyListeners();
   }
@@ -437,6 +520,36 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
+  getCookPageApi3(int orderStatus) async {
+    try {
+      cookList3 = await APIService().cookPageApi(
+        MyData.branchCode,
+        MyData.offOn,
+        orderStatus,
+        MyData.cookStatus,
+      );
+
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to load Order Cart: $e');
+    }
+  }
+
+  getCookPageApi4(int orderStatus) async {
+    try {
+      cookList4 = await APIService().cookPageApi(
+        MyData.branchCode,
+        MyData.offOn,
+        orderStatus,
+        MyData.cookStatus,
+      );
+
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to load Order Cart: $e');
+    }
+  }
+
   Future<bool> getApiConfirmCooking(
     int orderStatus,
     String listCode,
@@ -464,6 +577,8 @@ class ProviderService extends ChangeNotifier {
     getCategory(0);
     getProduct("", "", 1);
     getCookPageApi(2);
+    getCookPageApi3(3);
+    getCookPageApi4(4);
     notifyListeners();
   }
 }

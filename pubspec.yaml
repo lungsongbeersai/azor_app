@@ -48,6 +48,7 @@ dependencies:
   socket_io_client: ^2.0.3+1
   audioplayers: ^5.2.1
   msh_checkbox: ^2.0.1
+  expansion_tile_group: ^2.0.0
 
 dev_dependencies:
   flutter_test:
