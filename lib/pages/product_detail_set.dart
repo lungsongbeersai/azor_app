@@ -61,18 +61,6 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               final item = snapshot.data!.first;
 
-              // Initialize checkboxStates and expandedStates if needed
-              // if (checkboxStates.length != (item.productArray?.length ?? 0)) {
-              //   checkboxStates =
-              //       List<bool>.filled(item.productArray?.length ?? 0, false);
-              //   expandedStates =
-              //       List<bool>.filled(item.productArray?.length ?? 0, false);
-
-              //   // Example: Expand the first item by default
-              //   if (item.productArray!.isNotEmpty) expandedStates[0] = true;
-              //   selectedCount = 0; // Reset selected count
-              // }
-
               if (checkboxStates.length != (item.productArray?.length ?? 0)) {
                 checkboxStates =
                     List<bool>.filled(item.productArray?.length ?? 0, false);
@@ -320,42 +308,6 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
                             },
                           ),
                           const SizedBox(height: 10),
-                          // const Text(
-                          //   "ໝາຍເຫດ",
-                          //   style: TextStyle(
-                          //     fontSize: 20,
-                          //     fontWeight: FontWeight.bold,
-                          //     color: Colors.blue,
-                          //   ),
-                          // ),
-                          // TextFormField(
-                          //   autofocus: false,
-                          //   controller: textlController,
-                          //   focusNode: textlFocusNode,
-                          //   keyboardType: TextInputType.text,
-                          //   style: const TextStyle(fontSize: 18),
-                          //   decoration: const InputDecoration(
-                          //     hintText: 'ໝາຍເຫດ',
-                          //     hintStyle: TextStyle(fontSize: 16),
-                          //     border: OutlineInputBorder(
-                          //       borderSide: BorderSide(
-                          //         color: Colors.blue,
-                          //       ),
-                          //     ),
-                          //     enabledBorder: OutlineInputBorder(
-                          //       borderSide: BorderSide(
-                          //         color: Colors.blue,
-                          //         width: 1.0,
-                          //       ),
-                          //     ),
-                          //     focusedBorder: OutlineInputBorder(
-                          //       borderSide: BorderSide(
-                          //         color: Colors.blue,
-                          //         width: 1.0,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -458,16 +410,11 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
                                         selectedDetails.add(toppingId);
                                         selectedDetails1.add(topname);
                                       }
-
-                                      // if (toppingId != null) {
-                                      //   selectedDetails.add(toppingId);
-                                      //   selectedDetails1.add(topname);
-                                      // }
                                     }
                                   }
                                 }
                               }
-                              print("result: ${selectedDetails1}");
+
                               final proDetailCode =
                                   item.proDetailCode1.toString();
                               final sPrice = item.priceSetSPrice.toString();
@@ -546,7 +493,7 @@ class _ProductDetailSetState extends State<ProductDetailSet> {
                                 }
                               } catch (e) {
                                 EasyLoading.dismiss();
-                                print('Error: $e');
+                                // print('Error: $e');
                                 // Handle the error
                               }
                             },

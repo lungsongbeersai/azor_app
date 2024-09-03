@@ -10,7 +10,6 @@ import 'package:azor/models/product_models.dart';
 import 'package:azor/models/product_search_page.dart';
 import 'package:azor/models/table_models.dart';
 import 'package:azor/models/zone_models.dart';
-import 'package:azor/pages/product_detail_set.dart';
 import 'package:http/http.dart' as http;
 
 class APIService {
